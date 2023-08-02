@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'backboard.dart';
+import 'tetris_board.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
-      home: const BackBoard(),
+      home: const TetrisBoard(),
     );
   }
 }
