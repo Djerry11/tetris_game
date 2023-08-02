@@ -1,9 +1,14 @@
+import 'dart:ui';
+
 import 'package:tetris_game/values.dart';
 
 class Piece {
   //shape of tetromino
   Tetromino shape;
   Piece({required this.shape});
+
+  Color get color =>
+      tetrominoColor[shape] ?? const Color.fromARGB(0, 255, 255, 255);
 
   //position of grid for tetromino
   List<int> position = [];
@@ -73,7 +78,6 @@ class Piece {
 
         break;
       default:
-        break;
     }
   }
 
@@ -81,13 +85,20 @@ class Piece {
   void movePiece(Direction direction) {
     switch (direction) {
       case Direction.left:
-        position = position.map((pos) => pos - 1).toList();
+        for (int i = 0; i < position.length; i++) {
+          position[i]--;
+        }
         break;
       case Direction.right:
-        position = position.map((pos) => pos + 1).toList();
+        for (int i = 0; i < position.length; i++) {
+          position[i]++;
+        }
         break;
+
       case Direction.down:
-        position = position.map((pos) => pos + maxRow).toList();
+        for (int i = 0; i < position.length; i++) {
+          position[i] += maxCol;
+        }
         break;
     }
   }

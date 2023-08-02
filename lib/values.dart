@@ -1,6 +1,8 @@
 //total number of rows and columns in the game
-int maxRow = 10;
-int maxCol = 15;
+import 'dart:ui';
+
+int maxRow = 15;
+int maxCol = 10;
 
 //for movements direction of tetromino
 enum Direction {
@@ -46,3 +48,14 @@ enum Tetromino {
       00
   */
 }
+
+//colors for tetromino https://colorswall.com/palette/90259
+const Map<Tetromino, Color> tetrominoColor = {
+  Tetromino.I: Color(0xff00ffff),
+  Tetromino.O: Color(0xffffff00),
+  Tetromino.T: Color(0xff800080),
+  Tetromino.S: Color(0xff00ff00),
+  Tetromino.Z: Color(0xffff0000),
+  Tetromino.J: Color(0xff0000ff),
+  Tetromino.L: Color(0xffff7f00),
+};

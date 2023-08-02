@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Pixel extends StatelessWidget {
-  Pixel({super.key, this.color, this.index});
+class GridPixel extends StatelessWidget {
+  GridPixel({super.key, this.color, this.index});
   var color;
   var index;
 
