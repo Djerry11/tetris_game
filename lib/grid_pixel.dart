@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class GridPixel extends StatelessWidget {
-  GridPixel({super.key, this.color, this.index});
-  var color;
-  var index;
+  GridPixel({super.key, this.color});
+
+  Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class GridPixel extends StatelessWidget {
           Radius.circular(5),
         ),
       ),
-      child: Center(child: Text(index.toString())),
+      // child: Center(child: Text(index.toString())),
     );
   }
 }

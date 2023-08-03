@@ -22,40 +22,41 @@ enum Tetromino {
   L,
   /*
     I tetromino
-      0
-      0
-      0
-      0
+      o
+      o
+      o
+      o
     O tetromino
-      00
-      00
+      oo
+      oo
     T tetromino
-      000
-      0
+      ooo
+       o
+       O
     S tetromino
-      00
-      00
+       oo
+      oo
     Z tetromino
-      00
-      00   
+      oo
+       oo 
     J tetromino
-      0
-      0
-     00
+      o
+      o
+     oo
     L tetromino
-      0
-      0
-      00
+      o
+      o
+      oo
   */
 }
 
-//colors for tetromino https://colorswall.com/palette/90259
+//colors for tetromino https://colorswall.com/palette/9o259
 const Map<Tetromino, Color> tetrominoColor = {
   Tetromino.I: Color(0xff00ffff),
-  Tetromino.O: Color(0xffffff00),
-  Tetromino.T: Color(0xff800080),
+  Tetromino.O: Color(0xff800080),
+  Tetromino.T: Color(0xffffff00),
   Tetromino.S: Color(0xff00ff00),
   Tetromino.Z: Color(0xffff0000),
   Tetromino.J: Color(0xff0000ff),
-  Tetromino.L: Color(0xffff7f00),
+  Tetromino.L: Color(0xffffa500),
 };
