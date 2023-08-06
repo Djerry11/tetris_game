@@ -8,18 +8,23 @@ class GridPixel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(1),
-      decoration: BoxDecoration(
-        color: color,
-        border: Border.all(
-          color: Colors.black,
-          width: 0,
-        ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(5),
+    return MaterialButton(
+      onPressed: () {},
+      color: Colors.blue,
+      child: SizedBox(
+        width: 50,
+        height: 50,
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(
+              color: Colors.black,
+              width: 1,
+            ),
+          ),
         ),
       ),
+
       // child: Center(child: Text(index.toString())),
     );
   }
