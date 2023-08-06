@@ -19,10 +19,10 @@ class Piece {
     switch (shape) {
       case Tetromino.I:
         position = [
-          -35,
-          -25,
-          -15,
+          -4,
           -5,
+          -6,
+          -7,
         ];
         break;
       case Tetromino.O:

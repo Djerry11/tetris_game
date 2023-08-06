@@ -28,3 +28,19 @@ class ButtonColors {
     const Color.fromARGB(255, 42, 44, 42),
   ];
 }
+
+class PieceColor {
+  //tetromino color from classic tetris console 90s
+  //colorcode for lcd screen background
+
+  List<Color> activePiece = [
+    const Color.fromARGB(80, 174, 181, 161),
+    const Color(0xff010101),
+  ];
+  List<Color> bgPiece = [
+    const Color.fromARGB(100, 238, 239, 240),
+    const Color.fromARGB(102, 204, 198, 198),
+  ];
+
+  get inactivePiece => null;
+}

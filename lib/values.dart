@@ -1,7 +1,7 @@
 //total number of rows and columns in the game
 import 'dart:ui';
 
-int maxRow = 15;
+int maxRow = 20;
 int maxCol = 10;
 
 //for movements direction of tetromino

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:tetris_game/grid_pixel.dart';
+import 'package:tetris_game/pixel.dart';
+import 'package:tetris_game/resources/button_colors.dart';
 import 'package:tetris_game/tetromino_pieces.dart';
 import 'package:tetris_game/values.dart';
 
@@ -19,8 +20,12 @@ class TetrisBoard extends StatefulWidget {
 }
 
 class _TetrisBoardState extends State<TetrisBoard> {
-  Piece currentPiece = Piece(shape: Tetromino.I);
-
+  bool isPaused = false;
+  Timer? gameLoopTimer;
+  Piece nextPiece =
+      Piece(shape: Tetromino.values[Random().nextInt(Tetromino.values.length)]);
+  //assign the current piece to the next piece
+  late Piece currentPiece;
   //set current score to 0 initially
   int currentScore = 0;
 
@@ -30,38 +35,41 @@ class _TetrisBoardState extends State<TetrisBoard> {
   @override
   void initState() {
     super.initState();
+    currentPiece = nextPiece;
     startGame();
   }
 
 //create piece and loop the game
   void startGame() {
-    //identify the shape of current piece
+    // Identify the shape of the current piece
     currentPiece.initializePiece();
 
-    //screen refresh time
-    Duration frameRefreshRate = const Duration(milliseconds: 300);
-    loopGame(frameRefreshRate);
+    // Cancel the previous timer if it exists
+    gameLoopTimer?.cancel();
+
+    // Screen refresh time
+    Duration frameRefreshRate = const Duration(milliseconds: 800);
+
+    // Start the new game loop timer
+    gameLoopTimer = loopGame(frameRefreshRate);
   }
 
   //refresh the screen periodically
-  void loopGame(Duration frameRefreshRate) {
-    //speed of the game
-    Timer.periodic(
+  Timer loopGame(Duration frameRefreshRate) {
+    return Timer.periodic(
       frameRefreshRate,
       (timer) {
-        setState(() {
-          //check if the line can be cleared
-          clearLine();
-          //check if the piece is at the ends of the board
-          checkLanding();
-          //reset timer if game over
-          if (gameOver) {
-            timer.cancel();
-            showGameOverMessage();
-          }
-          //move the piece down
-          currentPiece.movePiece(Direction.down);
-        });
+        if (!isPaused) {
+          setState(() {
+            clearLine();
+            checkLanding();
+            if (gameOver) {
+              timer.cancel();
+              showGameOverMessage();
+            }
+            currentPiece.movePiece(Direction.down);
+          });
+        }
       },
     );
   }
@@ -135,27 +143,33 @@ class _TetrisBoardState extends State<TetrisBoard> {
 
 //move the piece in the left direction
   void moveLeft() {
-    if (!checkCollisions(Direction.left)) {
-      setState(() {
-        currentPiece.movePiece(Direction.left);
-      });
+    if (!isPaused) {
+      if (!checkCollisions(Direction.left)) {
+        setState(() {
+          currentPiece.movePiece(Direction.left);
+        });
+      }
     }
   }
 
 //move the piece in the right direction
   void moveRight() {
-    if (!checkCollisions(Direction.right)) {
-      setState(() {
-        currentPiece.movePiece(Direction.right);
-      });
+    if (!isPaused) {
+      if (!checkCollisions(Direction.right)) {
+        setState(() {
+          currentPiece.movePiece(Direction.right);
+        });
+      }
     }
   }
 
 //change the orientation of the piece
-  void rotPiece() {
-    setState(() {
-      currentPiece.rotatePiece();
-    });
+  void rotatePiece() {
+    if (!isPaused) {
+      setState(() {
+        currentPiece.rotatePiece();
+      });
+    }
   }
 
   //clear the lines if full
@@ -197,6 +211,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
     return false;
   }
 
+//show alert dialog box when game is over
   void showGameOverMessage() {
     showDialog(
       context: context,
@@ -206,7 +221,10 @@ class _TetrisBoardState extends State<TetrisBoard> {
           content: Text('Your Score is: $currentScore'),
           actions: [
             TextButton(
-              onPressed: resetGame,
+              onPressed: () {
+                resetGame();
+                Navigator.of(context).pop();
+              },
               child: const Text('Restart'),
             )
           ],
@@ -215,33 +233,75 @@ class _TetrisBoardState extends State<TetrisBoard> {
     );
   }
 
+//pause the game
+  void togglePause() {
+    setState(() {
+      isPaused = !isPaused;
+    });
+  }
+
   void resetGame() {
-    //reset all board pixels to null
     gameBoard =
         List.generate(maxRow, (row) => List.generate(maxCol, (col) => null));
     gameOver = false;
     currentScore = 0;
-    //close the dialog box
-    Navigator.of(context).pop();
-    //create the new piece
+
+    // Cancel the previous timer if it exists
+    gameLoopTimer?.cancel();
+
     createNewPiece();
-    //restart the game
     startGame();
+  }
+
+  //dropt the piece instantly
+  void dropPiece() {
+    if (!isPaused) {
+      setState(() {
+        // Keep moving the piece down until it collides or reaches the bottom
+        while (!checkCollisions(Direction.down)) {
+          currentPiece.movePiece(Direction.down);
+        }
+        // Handle landing and create a new piece
+        checkLanding();
+      });
+    }
+  }
+
+  //drop the piece by steps
+  void dropPieceBySteps(int steps) {
+    if (!isPaused) {
+      setState(() {
+        // Move the piece down by the specified number of steps
+        for (int i = 0; i < steps; i++) {
+          if (!checkCollisions(Direction.down)) {
+            currentPiece.movePiece(Direction.down);
+          } else {
+            break;
+          }
+        }
+        // Handle landing and create a new piece
+        checkLanding();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       //building the background of the board
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
+          Container(
+            color: Colors.green.shade50,
+            height: MediaQuery.of(context).size.height * 0.51,
+            width: MediaQuery.of(context).size.width * 0.5,
             child: GridView.builder(
               itemCount: maxRow * maxCol,
               physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: maxCol,
               ),
@@ -250,19 +310,17 @@ class _TetrisBoardState extends State<TetrisBoard> {
                 int col = index % maxCol;
                 //display shape of current piece in board
                 if (currentPiece.position.contains(index)) {
-                  return GridPixel(
-                    color: currentPiece.color,
+                  return Pixel(
+                    colors: PieceColor().activePiece,
                   );
                 } else if (gameBoard[row][col] != null) {
                   //display shape of landed piece in board
-                  final Tetromino? shape = gameBoard[row][col];
-                  return GridPixel(
-                    color: tetrominoColor[shape],
-                  );
+                  //  final Tetromino? shape = gameBoard[row][col];
+                  return Pixel(colors: PieceColor().activePiece);
                 } else {
                   //display empty grid
-                  return GridPixel(
-                    color: Colors.grey[850],
+                  return Pixel(
+                    colors: PieceColor().bgPiece,
                   );
                 }
               },
@@ -294,7 +352,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
                   ),
                 ),
                 IconButton(
-                  onPressed: rotPiece,
+                  onPressed: rotatePiece,
                   icon: const Icon(
                     Icons.refresh,
                   ),
@@ -302,6 +360,22 @@ class _TetrisBoardState extends State<TetrisBoard> {
                 IconButton(
                   onPressed: moveRight,
                   icon: const Icon(Icons.arrow_forward_ios),
+                ),
+                IconButton(
+                  onPressed: () {
+                    dropPiece();
+                  },
+                  icon: const Icon(Icons.arrow_downward),
+                ),
+                IconButton(
+                  onPressed: () {
+                    resetGame();
+                  },
+                  icon: const Icon(Icons.reset_tv),
+                ),
+                IconButton(
+                  onPressed: togglePause,
+                  icon: const Icon(Icons.play_arrow_rounded),
                 ),
               ],
             ),
