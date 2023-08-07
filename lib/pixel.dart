@@ -18,13 +18,13 @@ class Pixel extends StatelessWidget {
               borderRadius: const BorderRadius.all(Radius.circular(2)),
               border: Border.all(
                 color: colors[1],
-                width: 2,
+                width: 1,
               ),
             ),
           ),
           Container(
-            width: 10,
-            height: 10,
+            width: 11,
+            height: 11,
             decoration: BoxDecoration(
               color: colors[1],
               borderRadius: const BorderRadius.all(Radius.circular(2)),

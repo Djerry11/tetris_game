@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tetris_game/tetris_board.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +21,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
-      home: const TetrisBoard(),
+      // home: const Scaffold(
+      //   body: TetrisBoard(),
+      // ),
+      home: const HomeScreen(),
     );
   }
 }

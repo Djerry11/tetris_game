@@ -1,27 +1,18 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:tetris_game/pixel.dart';
-import 'package:tetris_game/resources/button_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tetris_game/tetris_board.dart';
 import 'package:tetris_game/tetromino_pieces.dart';
 import 'package:tetris_game/values.dart';
 
-//initialize board with null values
-List<List<Tetromino?>> gameBoard = List.generate(
-  maxRow,
-  (row) => List.generate(maxCol, (col) => null),
-);
+final gameFunctionProvider =
+    StateNotifierProvider<GameStateNotifier, dynamic>((ref) {
+  return GameStateNotifier();
+});
 
-class TetrisBoard extends StatefulWidget {
-  const TetrisBoard({
-    super.key,
-  });
-
-  @override
-  State<TetrisBoard> createState() => _TetrisBoardState();
-}
-
-class _TetrisBoardState extends State<TetrisBoard> {
+class GameStateNotifier extends StateNotifier<dynamic> {
+  GameStateNotifier() : super(dynamic);
   bool isPaused = false;
   Timer? gameLoopTimer;
   Piece nextPiece =
@@ -34,14 +25,20 @@ class _TetrisBoardState extends State<TetrisBoard> {
   //bool to check if the game is over
   bool gameOver = false;
 
-  @override
-  void initState() {
-    super.initState();
-    currentPiece = nextPiece;
-    startGame();
+//create piece and loop the game
+  void startGame() {
+    // Identify the shape of the current piece
+    currentPiece.initializePiece();
+
+    // Cancel the previous timer if it exists
+    gameLoopTimer?.cancel();
+
+    // Screen refresh time
+    Duration frameRefreshRate = const Duration(milliseconds: 800);
+
+    // Start the new game loop timer
+    gameLoopTimer = loopGame(frameRefreshRate);
   }
-
-
 
   //refresh the screen periodically
   Timer loopGame(Duration frameRefreshRate) {
@@ -200,34 +197,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
     return false;
   }
 
-//show alert dialog box when game is over
-  void showGameOverMessage() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Game Over'),
-          content: Text('Your Score is: $currentScore'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                resetGame();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Restart'),
-            )
-          ],
-        );
-      },
-    );
-  }
-
 //pause the game
-  void togglePause() {
-    setState(() {
-      isPaused = !isPaused;
-    });
-  }
 
   void resetGame() {
     gameBoard =
@@ -272,37 +242,5 @@ class _TetrisBoardState extends State<TetrisBoard> {
         checkLanding();
       });
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //return Scaffold(
-    //building the background of the board
-    return GridView.builder(
-      itemCount: maxRow * maxCol,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(0),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: maxCol, mainAxisSpacing: 0, crossAxisSpacing: 0),
-      itemBuilder: (context, index) {
-        int row = (index / maxCol).floor();
-        int col = index % maxCol;
-        //display shape of current piece in board
-        if (currentPiece.position.contains(index)) {
-          return Pixel(
-            colors: PieceColor().activePiece,
-          );
-        } else if (gameBoard[row][col] != null) {
-          //display shape of landed piece in board
-          //  final Tetromino? shape = gameBoard[row][col];
-          return Pixel(colors: PieceColor().activePiece);
-        } else {
-          //display empty grid
-          return Pixel(
-            colors: PieceColor().bgPiece,
-          );
-        }
-      },
-    );
   }
 }

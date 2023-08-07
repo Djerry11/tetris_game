@@ -27,6 +27,14 @@ class ButtonColors {
     const Color.fromARGB(255, 16, 168, 21),
     const Color.fromARGB(255, 42, 44, 42),
   ];
+  List<Color> resetButton = [
+    const Color.fromARGB(255, 242, 89, 89),
+    const Color.fromARGB(255, 174, 40, 58),
+    const Color.fromARGB(255, 212, 90, 90),
+    const Color.fromARGB(255, 167, 12, 61),
+    const Color.fromARGB(255, 220, 8, 8),
+    const Color.fromARGB(255, 49, 4, 7),
+  ];
 }
 
 class PieceColor {
