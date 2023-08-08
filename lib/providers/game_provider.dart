@@ -1,3 +1,33 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tetris_game/providers/tetris_state.dart';
+
+class GameSettingNotifier extends StateNotifier<GameSettingState> {
+  GameSettingNotifier()
+      : super(const GameSettingState(
+          isVibrate: true,
+          isPaused: false,
+          isColor: true,
+        ));
+
+  void toggleVibration() {
+    state = GameSettingState(isVibrate: !state.isVibrate);
+  }
+
+  void togglePause() {
+    state = GameSettingState(isPaused: !state.isPaused);
+  }
+
+  void toggleColor() {
+    state = GameSettingState(isColor: !state.isColor);
+  }
+}
+
+final gameSettingProvider =
+    StateNotifierProvider<GameSettingNotifier, GameSettingState>((ref) {
+  return GameSettingNotifier();
+});
+
+
 // import 'dart:async';
 // import 'dart:math';
 

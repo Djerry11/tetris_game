@@ -1,14 +1,14 @@
 class ButtonSize {
   List<double> mainButton = [
-    90,
+    92,
     78,
-    68,
+    60,
   ];
 
   List<double> controlButton = [
     65,
     56,
-    47,
+    43,
   ];
   List<double> tinyButton = [
     35,

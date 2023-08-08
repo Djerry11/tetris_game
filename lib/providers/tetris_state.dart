@@ -1,7 +1,21 @@
-// import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:tetris_game/values.dart';
 
-// part 'tetris_state.freezed.dart';
+part 'tetris_state.freezed.dart';
+
+@freezed
+class GameSettingState with _$GameSettingState {
+  const factory GameSettingState({
+    @Default(true) bool isVibrate,
+    @Default(false) bool isPaused,
+    @Default(true) bool isColor,
+  }) = _GameSettingState;
+}
+
+
+
+
+
 
 // @unfreezed
 // class TetrisState with _$TetrisState {

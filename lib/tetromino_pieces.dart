@@ -1,6 +1,5 @@
-import 'dart:ui';
-
-import 'package:tetris_game/values.dart';
+import 'package:flutter/material.dart';
+import 'package:tetris_game/resources/values.dart';
 
 import 'home_screen.dart';
 
@@ -9,8 +8,9 @@ class Piece {
   Tetromino shape;
   Piece({required this.shape});
 
-  Color get color =>
-      tetrominoColor[shape] ?? const Color.fromARGB(0, 249, 248, 248);
+  List<Color> get color =>
+      tetrominoColor[shape] ??
+      [const Color.fromARGB(255, 164, 148, 148), Colors.black];
 
   //position of grid for tetromino
   List<int> position = [];
@@ -63,20 +63,63 @@ class Piece {
         break;
       case Tetromino.J:
         position = [
-          -25,
+          -17,
+          -16,
           -15,
           -5,
-          -6,
         ];
 
         break;
       case Tetromino.L:
         position = [
-          -26,
+          -14,
+          -15,
           -16,
           -6,
-          -5,
         ];
+
+        break;
+      default:
+    }
+  }
+
+  void initializeNextPiece() {
+    //determine the shape of tetromino in gridboard
+    switch (shape) {
+      case Tetromino.I:
+        position = [0, 1, 2, 3];
+        break;
+      case Tetromino.O:
+        position = [1, 2, 5, 6];
+        break;
+      case Tetromino.T:
+        position = [1, 2, 3, 6];
+
+        break;
+      case Tetromino.S:
+        position = [
+          1,
+          2,
+          4,
+          5,
+        ];
+
+        break;
+      case Tetromino.Z:
+        position = [
+          1,
+          2,
+          6,
+          7,
+        ];
+
+        break;
+      case Tetromino.J:
+        position = [0, 1, 2, 6];
+
+        break;
+      case Tetromino.L:
+        position = [1, 2, 3, 5];
 
         break;
       default:
@@ -90,7 +133,7 @@ class Piece {
     switch (shape) {
       case Tetromino.L:
         switch (rotationState) {
-          case 0:
+          case 3:
             /*
             o
             o
@@ -108,7 +151,7 @@ class Piece {
               rotationState = (rotationState + 1) % 4;
             }
             break;
-          case 1:
+          case 0:
             /*
               o o o
               o
@@ -124,7 +167,7 @@ class Piece {
               rotationState = (rotationState + 1) % 4;
             }
             break;
-          case 2:
+          case 1:
             /*
            o o
              o
@@ -141,7 +184,7 @@ class Piece {
               rotationState = (rotationState + 1) % 4;
             }
             break;
-          case 3:
+          case 2:
             /*
                 o
             o o o 
@@ -161,7 +204,7 @@ class Piece {
         break;
       case Tetromino.J:
         switch (rotationState) {
-          case 0:
+          case 1:
             /*
             o
             o
@@ -179,7 +222,7 @@ class Piece {
               rotationState = (rotationState + 1) % 4;
             }
             break;
-          case 1:
+          case 2:
             /*
               o
               o o o
@@ -196,7 +239,7 @@ class Piece {
               rotationState = (rotationState + 1) % 4;
             }
             break;
-          case 2:
+          case 3:
             /*
              o o
              o
@@ -213,7 +256,7 @@ class Piece {
               rotationState = (rotationState + 1) % 4;
             }
             break;
-          case 3:
+          case 0:
             /*
             o o o 
                 o

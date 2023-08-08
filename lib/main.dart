@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'home_screen.dart';
@@ -7,6 +8,9 @@ void main() {
   runApp(const ProviderScope(
     child: MyApp(),
   ));
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+    SystemUiOverlay.bottom,
+  ]);
 }
 
 class MyApp extends StatelessWidget {

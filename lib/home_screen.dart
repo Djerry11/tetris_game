@@ -6,10 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tetris_game/buttons/cutom_button.dart';
 import 'package:tetris_game/resources/button_colors.dart';
 import 'package:tetris_game/resources/button_size.dart';
+import 'package:tetris_game/side_screen.dart';
 import 'package:tetris_game/tetris_board.dart';
 import 'package:tetris_game/tetromino_pieces.dart';
-import 'package:tetris_game/values.dart';
+import 'package:tetris_game/resources/values.dart';
 import 'package:vibration/vibration.dart';
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart'
+    as shadow;
 
 List<List<Tetromino?>> gameBoard = List.generate(
   maxRow,
@@ -24,6 +27,9 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  bool changeColor = false;
+  var colors = Homecolor().color1;
+
   bool isPaused = false;
   bool vibrate = true;
   Timer? gameLoopTimer;
@@ -333,287 +339,308 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = Colors.blueGrey.shade600;
+    const backgroundColor = Color.fromARGB(255, 77, 132, 141);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            //Display Screen for the game
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 40,
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: colors,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              //Display Screen for the game
+              Padding(
+                padding: const EdgeInsets.only(top: 40),
 
-              //Display Screen for the game TetrisBoard ,scores,level,lines,next piece
-              child: Container(
-                height: height * 0.478,
-                width: width * 0.7,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black45,
-                    width: 2,
-                  ),
-                  color: Colors.green.shade50,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                //Display Screen for the game TetrisBoard ,scores,level,lines,next piece
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    SizedBox(
-                      height: height * 0.51,
-                      width: width * 0.46,
-                      child: TetrisBoard(
-                        currentPiece: currentPiece,
-                        gameBoard: gameBoard,
+                    Container(
+                      decoration: const shadow.BoxDecoration(
+                        boxShadow: [
+                          shadow.BoxShadow(
+                            color: Color.fromARGB(255, 34, 15, 2),
+                            blurRadius: 8,
+                            blurStyle: BlurStyle.inner,
+                            offset: Offset(-6, -6),
+                            inset: true,
+                          ),
+                          shadow.BoxShadow(
+                              color: Color.fromARGB(255, 34, 15, 2),
+                              blurRadius: 8,
+                              blurStyle: BlurStyle.outer,
+                              offset: Offset(6, 6),
+                              inset: true),
+                        ],
+                      ),
+                      height: height * 0.52,
+                      width: width * 0.78,
+                    ),
+                    Container(
+                      height: height * 0.478,
+                      width: width * 0.7,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color.fromARGB(115, 20, 19, 19),
+                          width: 4,
+                        ),
+                        color: Colors.green.shade50,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black45,
+                                width: 2,
+                              ),
+                            ),
+                            height: height * 0.52,
+                            width: width * 0.46,
+                            child: TetrisBoard(
+                              currentPiece: currentPiece,
+                              gameBoard: gameBoard,
+                            ),
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 219, 229, 216),
+                            ),
+                            height: height * 0.51,
+                            width: width * 0.20,
+                            child: SideScreen(
+                              vibrate: vibrate,
+                              pause: isPaused,
+                              currentScore: currentScore,
+                              nextPiece: nextPiece,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+
+              //Setting/options buttons list tiny buttons
+              ClipRRect(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 10, 0, 5),
+                  child: ClipRect(
+                    child: Row(
                       children: [
-                        const SizedBox(
-                          height: 25,
+                        SizedBox(
+                          width: width * 0.43,
                         ),
-                        const Row(
-                          children: [
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              'Score: ',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
-                        ),
+                        //list of options tiny buttons
                         Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            const SizedBox(
-                              width: 20,
+                            //Reset Button
+                            CustomButton(
+                              onPressed: () async {
+                                if (vibrate) {
+                                  await Vibration.vibrate(
+                                      duration: 50, amplitude: 22);
+                                }
+                                confirmReset();
+                              },
+                              buttonSize: ButtonSize().tinyButton,
+                              colors: ButtonColors().resetButton,
+                              buttonName: 'Reset',
+                              textColor: Colors.red,
                             ),
-                            Text(
-                              '$currentScore',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black45,
-                              ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            //Pause Button/playbutton
+                            CustomButton(
+                              onPressed: () async {
+                                togglePause();
+                                if (vibrate) {
+                                  await Vibration.vibrate(
+                                      duration: 50, amplitude: 22);
+                                }
+                              },
+                              buttonSize: ButtonSize().tinyButton,
+                              colors: ButtonColors().tinyButton,
+                              buttonName: isPaused ? 'Play' : 'Pause',
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            //Sound/vibrate Button
+                            CustomButton(
+                              onPressed: () async {
+                                toggleVibrate();
+                                if (vibrate) {
+                                  await Vibration.vibrate(
+                                      duration: 50, amplitude: 22);
+                                }
+                              },
+                              buttonSize: ButtonSize().tinyButton,
+                              colors: ButtonColors().tinyButton,
+                              buttonName: 'Vibrate ',
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            //Options Button
+                            CustomButton(
+                              onPressed: () async {
+                                setState(() {
+                                  changeColor
+                                      ? colors = Homecolor().color2
+                                      : colors = Homecolor().color1;
+                                  changeColor = !changeColor;
+                                });
+                                if (vibrate) {
+                                  await Vibration.vibrate(
+                                      duration: 50, amplitude: 22);
+                                }
+                              },
+                              buttonSize: ButtonSize().tinyButton,
+                              colors: ButtonColors().tinyButton,
+                              buttonName: 'Options',
                             ),
                           ],
                         ),
                       ],
-                    )
+                    ),
+                  ),
+                ),
+              ),
+
+              //Game control buttons
+              Expanded(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 0, 30, 20),
+                      child: SizedBox(
+                          width: width * 0.5,
+                          height: 300,
+                          //  color: _backgroundColor,
+                          //movement controll buttons
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              //up button//drop down instantly
+                              CustomButton(
+                                onPressed: () async {
+                                  dropPiece();
+                                  if (vibrate) {
+                                    await Vibration.vibrate(
+                                      duration: 50,
+                                      amplitude: 16,
+                                    );
+                                  }
+                                },
+                                buttonSize: ButtonSize().controlButton,
+                                colors: ButtonColors().controlButton,
+                              ),
+                              //left and right buttons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  //left button
+                                  CustomButton(
+                                    onPressed: () async {
+                                      moveLeft();
+                                      if (vibrate) {
+                                        await Vibration.vibrate(
+                                          duration: 50,
+                                          amplitude: 16,
+                                        );
+                                      }
+                                    },
+                                    buttonSize: ButtonSize().controlButton,
+                                    colors: ButtonColors().controlButton,
+                                  ),
+                                  const SizedBox(
+                                    width: 60,
+                                  ),
+                                  //right button
+                                  CustomButton(
+                                    onPressed: () async {
+                                      moveRight();
+                                      if (vibrate) {
+                                        await Vibration.vibrate(
+                                          duration: 50,
+                                          amplitude: 16,
+                                        );
+                                      }
+                                    },
+                                    buttonSize: ButtonSize().controlButton,
+                                    colors: ButtonColors().controlButton,
+                                  ),
+                                ],
+                              ),
+                              //down button
+                              CustomButton(
+                                onPressed: () {
+                                  if (vibrate) {
+                                    Vibration.vibrate(
+                                      duration: 50,
+                                      amplitude: 16,
+                                    );
+                                  }
+                                  dropPieceBySteps(2);
+                                },
+                                buttonSize: ButtonSize().controlButton,
+                                colors: ButtonColors().controlButton,
+                              ),
+                            ],
+                          )),
+                    ),
+                    //main button /Rotate button
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 60, 10, 40),
+                      child: SizedBox(
+                        width: width * 0.35,
+                        height: double.infinity,
+                        //  color: _backgroundColor,
+                        child: Center(
+                            //Rotate Buttonf
+                            child: CustomButton(
+                          onPressed: () async {
+                            rotatePiece();
+                            if (vibrate) {
+                              await Vibration.vibrate(
+                                duration: 50,
+                                amplitude: 18,
+                              );
+                            }
+                          },
+                          buttonSize: ButtonSize().mainButton,
+                          colors: ButtonColors().mainButton,
+                          buttonName: 'Rotate',
+                        )),
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-
-            //Setting/options buttons list tiny buttons
-            ClipRRect(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 10, 0, 5),
-                child: ClipRect(
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: width * 0.4,
-                      ),
-                      //list of options tiny buttons
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          //Reset Button
-                          CustomButton(
-                            onPressed: () async {
-                              if (vibrate) {
-                                await Vibration.vibrate(
-                                    duration: 50, amplitude: 22);
-                              }
-                              confirmReset();
-                            },
-                            buttonSize: ButtonSize().tinyButton,
-                            colors: ButtonColors().resetButton,
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          //Pause Button/playbutton
-                          CustomButton(
-                            onPressed: () async {
-                              togglePause();
-                              if (vibrate) {
-                                await Vibration.vibrate(
-                                    duration: 50, amplitude: 22);
-                              }
-                            },
-                            buttonSize: ButtonSize().tinyButton,
-                            colors: ButtonColors().tinyButton,
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          //Sound/vibrate Button
-                          CustomButton(
-                            onPressed: () async {
-                              toggleVibrate();
-                              if (vibrate) {
-                                await Vibration.vibrate(
-                                    duration: 50, amplitude: 22);
-                              }
-                            },
-                            buttonSize: ButtonSize().tinyButton,
-                            colors: ButtonColors().tinyButton,
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          //Options Button
-                          CustomButton(
-                            onPressed: () async {
-                              if (vibrate) {
-                                await Vibration.vibrate(
-                                    duration: 50, amplitude: 22);
-                              }
-                            },
-                            buttonSize: ButtonSize().tinyButton,
-                            colors: ButtonColors().tinyButton,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            //Game control buttons
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 20, 30, 25),
-                    child: SizedBox(
-                        width: width * 0.5,
-                        height: double.infinity,
-                        //  color: _backgroundColor,
-                        //movement controll buttons
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            //up button//drop down instantly
-                            CustomButton(
-                              onPressed: () async {
-                                dropPiece();
-                                if (vibrate) {
-                                  await Vibration.vibrate(
-                                    duration: 50,
-                                    amplitude: 22,
-                                  );
-                                }
-                              },
-                              buttonSize: ButtonSize().controlButton,
-                              colors: ButtonColors().controlButton,
-                            ),
-                            //left and right buttons
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                //left button
-                                CustomButton(
-                                  onPressed: () async {
-                                    moveLeft();
-                                    if (vibrate) {
-                                      await Vibration.vibrate(
-                                        duration: 50,
-                                        amplitude: 22,
-                                      );
-                                    }
-                                  },
-                                  buttonSize: ButtonSize().controlButton,
-                                  colors: ButtonColors().controlButton,
-                                ),
-                                const SizedBox(
-                                  width: 50,
-                                ),
-                                //right button
-                                CustomButton(
-                                  onPressed: () async {
-                                    moveRight();
-                                    if (vibrate) {
-                                      await Vibration.vibrate(
-                                        duration: 50,
-                                        amplitude: 22,
-                                      );
-                                    }
-                                  },
-                                  buttonSize: ButtonSize().controlButton,
-                                  colors: ButtonColors().controlButton,
-                                ),
-                              ],
-                            ),
-                            //down button
-                            CustomButton(
-                              onPressed: () {
-                                if (vibrate) {
-                                  Vibration.vibrate(
-                                    duration: 50,
-                                    amplitude: 22,
-                                  );
-                                }
-                                dropPieceBySteps(2);
-                              },
-                              buttonSize: ButtonSize().controlButton,
-                              colors: ButtonColors().controlButton,
-                            ),
-                          ],
-                        )),
-                  ),
-                  //main button /Rotate button
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 10, 40),
-                    child: SizedBox(
-                      width: width * 0.35,
-                      height: double.infinity,
-                      //  color: _backgroundColor,
-                      child: Center(
-                          //Rotate Buttonf
-                          child: CustomButton(
-                        onPressed: () async {
-                          rotatePiece();
-                          if (vibrate) {
-                            await Vibration.vibrate(
-                              duration: 50,
-                              amplitude: 22,
-                            );
-                          }
-                        },
-                        buttonSize: ButtonSize().mainButton,
-                        colors: ButtonColors().mainButton,
-                      )),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
