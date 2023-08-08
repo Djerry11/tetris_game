@@ -73,7 +73,6 @@ class _CustomButtonState extends State<CustomButton>
           },
           onTapUp: (_) {
             _controller.reverse();
-            widget.onPressed();
           },
           onTapCancel: () {
             _controller.reverse();

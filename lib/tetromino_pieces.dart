@@ -1,7 +1,8 @@
 import 'dart:ui';
 
-import 'package:tetris_game/tetris_board.dart';
 import 'package:tetris_game/values.dart';
+
+import 'home_screen.dart';
 
 class Piece {
   //shape of tetromino
@@ -19,10 +20,10 @@ class Piece {
     switch (shape) {
       case Tetromino.I:
         position = [
-          -4,
-          -5,
-          -6,
           -7,
+          -6,
+          -5,
+          -4,
         ];
         break;
       case Tetromino.O:
@@ -44,10 +45,10 @@ class Piece {
         break;
       case Tetromino.S:
         position = [
-          -15,
           -14,
-          -6,
+          -15,
           -5,
+          -6,
         ];
 
         break;
@@ -64,8 +65,8 @@ class Piece {
         position = [
           -25,
           -15,
-          -6,
           -5,
+          -6,
         ];
 
         break;
@@ -113,9 +114,9 @@ class Piece {
               o
           */
             newPosition = [
-              position[1] - 1,
-              position[1],
               position[1] + 1,
+              position[1],
+              position[1] - 1,
               position[1] + maxCol - 1,
             ];
             if (isPiecePosValid(newPosition)) {
@@ -146,10 +147,10 @@ class Piece {
             o o o 
           */
             newPosition = [
-              position[1] - maxCol + 1,
+              position[1] - 1,
               position[1],
               position[1] + 1,
-              position[1] - 1,
+              position[1] - maxCol + 1,
             ];
             if (isPiecePosValid(newPosition)) {
               position = newPosition;
@@ -389,16 +390,14 @@ class Piece {
         switch (rotationState) {
           case 0:
             /*
-            o
-            o
-            o 
-            o
+            o o o o
+            
           */
             newPosition = [
-              position[1] - maxCol,
+              position[1] - 1,
               position[1],
-              position[1] + maxCol,
-              position[1] + 2 * maxCol,
+              position[1] + 1,
+              position[1] + 2,
             ];
             //check if the new postion is valid and update accordingly
             if (isPiecePosValid(newPosition)) {
@@ -408,14 +407,17 @@ class Piece {
             break;
           case 1:
             /*
-              o o o o
+              o
+              o
+              o
+              o
               
           */
             newPosition = [
-              position[1] + 1,
+              position[1] - maxCol,
               position[1],
-              position[1] - 1,
-              position[1] - 2,
+              position[1] + maxCol,
+              position[1] + 2 * maxCol,
             ];
             if (isPiecePosValid(newPosition)) {
               position = newPosition;
@@ -475,6 +477,7 @@ class Piece {
           position[i]--;
         }
         break;
+
       case Direction.right:
         for (int i = 0; i < position.length; i++) {
           position[i]++;
