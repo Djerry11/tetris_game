@@ -83,13 +83,13 @@ const Map<Tetromino, List<Color>> tetrominoColor = {
   ],
 };
 
-class Homecolor {
-  List<Color> color1 = [
-    Colors.green,
-    Colors.purple,
-  ];
-  List<Color> color2 = [
-    Colors.blue,
-    const Color.fromARGB(255, 22, 115, 79),
-  ];
-}
+List<List<Color>> colorGradients = [
+  [const Color(0xFF42275a), const Color(0xFF734b6d)],
+  [const Color(0xFFffafbd), const Color(0xFFffc3a0)],
+  [const Color(0xFF2193b0), const Color(0xFF6dd5ed)],
+  [const Color(0xFFcc2b5e), const Color(0xFF753a88)],
+  [const Color(0xFFee9ca7), const Color(0xFFffdde1)],
+  [const Color(0xFFbdc3c7), const Color(0xFF2c3e50)],
+  [const Color(0xFFde6262), const Color(0xFFffb88c)],
+  [const Color(0xFF06beb6), const Color(0xFF48b1bf)],
+];

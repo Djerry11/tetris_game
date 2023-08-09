@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:tetris_game/values.dart';
 
@@ -9,6 +11,7 @@ class GameSettingState with _$GameSettingState {
     @Default(true) bool isVibrate,
     @Default(false) bool isPaused,
     @Default(true) bool isColor,
+    required List<Color> screenColor,
   }) = _GameSettingState;
 }
 

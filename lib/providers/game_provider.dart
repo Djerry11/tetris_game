@@ -1,24 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tetris_game/providers/tetris_state.dart';
+import 'package:tetris_game/resources/values.dart';
+
+var i = 0;
 
 class GameSettingNotifier extends StateNotifier<GameSettingState> {
   GameSettingNotifier()
-      : super(const GameSettingState(
+      : super(GameSettingState(
           isVibrate: true,
           isPaused: false,
           isColor: true,
+          screenColor: colorGradients[i],
         ));
 
   void toggleVibration() {
-    state = GameSettingState(isVibrate: !state.isVibrate);
+    state = state.copyWith(isVibrate: !state.isVibrate);
+    //state = GameSettingState(isVibrate: !state.isVibrate);
   }
 
   void togglePause() {
-    state = GameSettingState(isPaused: !state.isPaused);
+    state = state.copyWith(isPaused: !state.isPaused);
+    //state = GameSettingState(isPaused: !state.isPaused);
   }
 
   void toggleColor() {
-    state = GameSettingState(isColor: !state.isColor);
+    state = state.copyWith(isColor: !state.isColor);
+    // state = GameSettingState(isColor: !state.isColor);
+  }
+
+  void toggleBackground() {
+    state = state.copyWith(
+        screenColor: colorGradients[++i % colorGradients.length]);
   }
 }
 

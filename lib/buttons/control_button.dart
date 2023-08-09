@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
-class CustomButton extends StatefulWidget {
+class ControlButton extends StatefulWidget {
   final VoidCallback onPressed;
   final List<double> buttonSize;
   final List<Color> colors;
-  final String? buttonName;
-  final Color? textColor;
-  final VoidCallback? onDoubleTap;
 
-  const CustomButton({
+  const ControlButton({
     Key? key,
     required this.onPressed,
     required this.buttonSize,
     required this.colors,
-    this.buttonName,
-    this.textColor,
-    this.onDoubleTap,
   }) : super(key: key);
 
   @override
-  State<CustomButton> createState() => _CustomButtonState();
+  State<ControlButton> createState() => _ControlButtonState();
 }
 
-class _CustomButtonState extends State<CustomButton>
+class _ControlButtonState extends State<ControlButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -74,7 +68,6 @@ class _CustomButtonState extends State<CustomButton>
               ),
             ),
             GestureDetector(
-              onDoubleTap: widget.onDoubleTap,
               onTap: widget.onPressed,
               onTapDown: (_) {
                 _controller.forward();
@@ -147,14 +140,6 @@ class _CustomButtonState extends State<CustomButton>
               ),
             ),
           ],
-        ),
-        Text(
-          widget.buttonName ?? '',
-          style: TextStyle(
-            color: widget.textColor,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ],
     );

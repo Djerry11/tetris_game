@@ -19,6 +19,7 @@ mixin _$GameSettingState {
   bool get isVibrate => throw _privateConstructorUsedError;
   bool get isPaused => throw _privateConstructorUsedError;
   bool get isColor => throw _privateConstructorUsedError;
+  List<Color> get screenColor => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GameSettingStateCopyWith<GameSettingState> get copyWith =>
@@ -31,7 +32,8 @@ abstract class $GameSettingStateCopyWith<$Res> {
           GameSettingState value, $Res Function(GameSettingState) then) =
       _$GameSettingStateCopyWithImpl<$Res, GameSettingState>;
   @useResult
-  $Res call({bool isVibrate, bool isPaused, bool isColor});
+  $Res call(
+      {bool isVibrate, bool isPaused, bool isColor, List<Color> screenColor});
 }
 
 /// @nodoc
@@ -50,6 +52,7 @@ class _$GameSettingStateCopyWithImpl<$Res, $Val extends GameSettingState>
     Object? isVibrate = null,
     Object? isPaused = null,
     Object? isColor = null,
+    Object? screenColor = null,
   }) {
     return _then(_value.copyWith(
       isVibrate: null == isVibrate
@@ -64,6 +67,10 @@ class _$GameSettingStateCopyWithImpl<$Res, $Val extends GameSettingState>
           ? _value.isColor
           : isColor // ignore: cast_nullable_to_non_nullable
               as bool,
+      screenColor: null == screenColor
+          ? _value.screenColor
+          : screenColor // ignore: cast_nullable_to_non_nullable
+              as List<Color>,
     ) as $Val);
   }
 }
@@ -76,7 +83,8 @@ abstract class _$$_GameSettingStateCopyWith<$Res>
       __$$_GameSettingStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isVibrate, bool isPaused, bool isColor});
+  $Res call(
+      {bool isVibrate, bool isPaused, bool isColor, List<Color> screenColor});
 }
 
 /// @nodoc
@@ -93,6 +101,7 @@ class __$$_GameSettingStateCopyWithImpl<$Res>
     Object? isVibrate = null,
     Object? isPaused = null,
     Object? isColor = null,
+    Object? screenColor = null,
   }) {
     return _then(_$_GameSettingState(
       isVibrate: null == isVibrate
@@ -107,6 +116,10 @@ class __$$_GameSettingStateCopyWithImpl<$Res>
           ? _value.isColor
           : isColor // ignore: cast_nullable_to_non_nullable
               as bool,
+      screenColor: null == screenColor
+          ? _value._screenColor
+          : screenColor // ignore: cast_nullable_to_non_nullable
+              as List<Color>,
     ));
   }
 }
@@ -115,7 +128,11 @@ class __$$_GameSettingStateCopyWithImpl<$Res>
 
 class _$_GameSettingState implements _GameSettingState {
   const _$_GameSettingState(
-      {this.isVibrate = true, this.isPaused = false, this.isColor = true});
+      {this.isVibrate = true,
+      this.isPaused = false,
+      this.isColor = true,
+      required final List<Color> screenColor})
+      : _screenColor = screenColor;
 
   @override
   @JsonKey()
@@ -126,10 +143,17 @@ class _$_GameSettingState implements _GameSettingState {
   @override
   @JsonKey()
   final bool isColor;
+  final List<Color> _screenColor;
+  @override
+  List<Color> get screenColor {
+    if (_screenColor is EqualUnmodifiableListView) return _screenColor;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_screenColor);
+  }
 
   @override
   String toString() {
-    return 'GameSettingState(isVibrate: $isVibrate, isPaused: $isPaused, isColor: $isColor)';
+    return 'GameSettingState(isVibrate: $isVibrate, isPaused: $isPaused, isColor: $isColor, screenColor: $screenColor)';
   }
 
   @override
@@ -141,11 +165,14 @@ class _$_GameSettingState implements _GameSettingState {
                 other.isVibrate == isVibrate) &&
             (identical(other.isPaused, isPaused) ||
                 other.isPaused == isPaused) &&
-            (identical(other.isColor, isColor) || other.isColor == isColor));
+            (identical(other.isColor, isColor) || other.isColor == isColor) &&
+            const DeepCollectionEquality()
+                .equals(other._screenColor, _screenColor));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isVibrate, isPaused, isColor);
+  int get hashCode => Object.hash(runtimeType, isVibrate, isPaused, isColor,
+      const DeepCollectionEquality().hash(_screenColor));
 
   @JsonKey(ignore: true)
   @override
@@ -158,7 +185,8 @@ abstract class _GameSettingState implements GameSettingState {
   const factory _GameSettingState(
       {final bool isVibrate,
       final bool isPaused,
-      final bool isColor}) = _$_GameSettingState;
+      final bool isColor,
+      required final List<Color> screenColor}) = _$_GameSettingState;
 
   @override
   bool get isVibrate;
@@ -166,6 +194,8 @@ abstract class _GameSettingState implements GameSettingState {
   bool get isPaused;
   @override
   bool get isColor;
+  @override
+  List<Color> get screenColor;
   @override
   @JsonKey(ignore: true)
   _$$_GameSettingStateCopyWith<_$_GameSettingState> get copyWith =>
