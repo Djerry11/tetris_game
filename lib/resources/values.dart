@@ -21,34 +21,6 @@ enum Tetromino {
   Z,
   J,
   L,
-  /*
-    I tetromino
-      o
-      o
-      o
-      o
-    O tetromino
-      oo
-      oo
-    T tetromino
-      ooo
-       o
-       O
-    S tetromino
-       oo
-      oo
-    Z tetromino
-      oo
-       oo 
-    J tetromino
-      o
-      o
-     oo
-    L tetromino
-      o
-      o
-      oo
-  */
 }
 
 //colors for tetromino https://colorswall.com/palette/9o259

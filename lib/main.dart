@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'home_screen.dart';
+import 'package:tetris_game/check.dart';
 
 void main() {
   runApp(const ProviderScope(
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
       // home: const Scaffold(
       //   body: TetrisBoard(),
       // ),
-      home: const HomeScreen(),
+      home: const CheckScreen(),
     );
   }
 }

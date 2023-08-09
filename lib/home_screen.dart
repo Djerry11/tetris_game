@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tetris_game/buttons/control_button.dart';
 import 'package:tetris_game/buttons/cutom_button.dart';
 import 'package:tetris_game/providers/game_provider.dart';
+import 'package:tetris_game/providers/game_state_provider.dart';
 import 'package:tetris_game/resources/button_colors.dart';
 import 'package:tetris_game/resources/button_size.dart';
 import 'package:tetris_game/side_screen.dart';
@@ -46,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    startGame();
+    ref.watch(gameController.notifier).startGame();
   }
 
   void startGame() {
