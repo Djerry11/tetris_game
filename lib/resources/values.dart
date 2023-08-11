@@ -65,3 +65,19 @@ List<List<Color>> colorGradients = [
   [const Color(0xFFde6262), const Color(0xFFffb88c)],
   [const Color(0xFF06beb6), const Color(0xFF48b1bf)],
 ];
+
+class PieceColor {
+  //tetromino color from classic tetris console 90s
+  //colorcode for lcd screen background
+
+  List<Color> activePiece = [
+    const Color.fromARGB(80, 174, 181, 161),
+    const Color(0xff010101),
+  ];
+  List<Color> bgPiece = [
+    const Color.fromARGB(95, 236, 236, 237),
+    const Color.fromARGB(102, 158, 171, 167),
+  ];
+
+  get inactivePiece => null;
+}

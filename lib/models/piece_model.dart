@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tetris_game/resources/values.dart';
 
-import '../home_screen.dart';
+import '../providers/game_control_provider.dart';
 
 part 'piece_model.freezed.dart';
 
@@ -25,6 +25,8 @@ class GameState with _$GameState {
     required bool gameOver,
     required bool isPaused,
     required bool vibrate,
+    required bool isColor,
+    required List<Color> screenColor,
   }) = _GameState;
 
   factory GameState.initial() => const GameState(
@@ -35,6 +37,8 @@ class GameState with _$GameState {
         gameOver: false,
         isPaused: false,
         vibrate: true,
+        isColor: true,
+        screenColor: [Colors.orangeAccent, Colors.deepPurpleAccent],
       );
 }
 
@@ -149,7 +153,7 @@ extension PieceExtension on Piece {
     int row = (position / maxCol).floor();
     int col = position % maxCol;
     //return false if the position is occupied in the board
-    if (row < 0 || gameBoard[row][col] != null || col < 0) {
+    if (row < -2 || gameBoard[row][col] != null || col < 0) {
       return false;
     } else {
       return true;

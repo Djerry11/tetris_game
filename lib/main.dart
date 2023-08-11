@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tetris_game/check.dart';
+import 'package:tetris_game/home_screen.dart';
 
 void main() {
   runApp(const ProviderScope(
     child: MyApp(),
   ));
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
-    SystemUiOverlay.bottom,
-  ]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 }
 
 class MyApp extends StatelessWidget {
@@ -27,7 +25,7 @@ class MyApp extends StatelessWidget {
       // home: const Scaffold(
       //   body: TetrisBoard(),
       // ),
-      home: const CheckScreen(),
+      home: const HomeScreen(),
     );
   }
 }
