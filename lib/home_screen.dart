@@ -81,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                           width: width * 0.78,
                         ),
                         Container(
-                          height: height * 0.478,
+                          height: height * 0.467,
                           width: width * 0.7,
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -113,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                                         visible:
                                             ref.watch(gameController).gameOver,
                                         child: Positioned(
-                                          top: height * 0.07,
+                                          top: height * 0.08,
                                           child: SizedBox(
                                               width: width * 0.45,
                                               child: const GameOverScreen()),

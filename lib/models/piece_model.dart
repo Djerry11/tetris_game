@@ -32,7 +32,7 @@ class GameState with _$GameState {
   factory GameState.initial() => const GameState(
         currentPiece: Piece(shape: Tetromino.I, position: []),
         nextPiece: Piece(shape: Tetromino.I, position: []),
-        gameBoard: [],
+        gameBoard: [[]],
         currentScore: 0,
         gameOver: false,
         isPaused: false,

@@ -7,7 +7,7 @@ class GameOverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title = "GAME OVER";
-    String subtitle = 'PRESS START \nTO \nPLAY';
+    String subtitle = 'PRESS START \nTO \nPLAY \nAGAIN';
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

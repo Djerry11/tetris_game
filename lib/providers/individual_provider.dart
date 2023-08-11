@@ -13,7 +13,7 @@ final isInitialLaunch = StateProvider<bool>((ref) {
 var i = 0;
 
 class ScreenNotifier extends StateNotifier<List<Color>> {
-  ScreenNotifier() : super(colorGradients[i]);
+  ScreenNotifier() : super(colorGradients[5]);
 
   void toggleBackground() {
     state = colorGradients[++i % colorGradients.length];

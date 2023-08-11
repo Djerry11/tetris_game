@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-int maxRow = 20;
-int maxCol = 10;
+const int maxRow = 20;
+const int maxCol = 10;
 
 //for movements direction of tetromino
 enum Direction {
@@ -58,12 +58,12 @@ const Map<Tetromino, List<Color>> tetrominoColor = {
 List<List<Color>> colorGradients = [
   [const Color(0xFF42275a), const Color(0xFF734b6d)],
   [const Color(0xFFffafbd), const Color(0xFFffc3a0)],
-  [const Color(0xFF2193b0), const Color(0xFF6dd5ed)],
+  [const Color(0xFF2193b0), const Color.fromARGB(255, 14, 68, 80)],
   [const Color(0xFFcc2b5e), const Color(0xFF753a88)],
   [const Color(0xFFee9ca7), const Color(0xFFffdde1)],
   [const Color(0xFFbdc3c7), const Color(0xFF2c3e50)],
   [const Color(0xFFde6262), const Color(0xFFffb88c)],
-  [const Color(0xFF06beb6), const Color(0xFF48b1bf)],
+  [const Color.fromARGB(255, 235, 247, 247), const Color(0xFF48b1bf)],
 ];
 
 class PieceColor {
