@@ -19,20 +19,33 @@ class GameController extends StateNotifier<GameState> {
   //create the next piece
   Piece nextPiece =
       Piece(shape: Tetromino.values[Random().nextInt(Tetromino.values.length)]);
-  int refreshTime = 800;
+
   late Piece currentPiece;
   int currentScore = 0;
 
   GameController(this.ref) : super(GameState.initial()) {
-    final startAudio = AudioPlayer();
-    startAudio.play(AssetSource('initialsetup.mp3'));
     state = state.copyWith(gameBoard: gameBoard);
     startingScreen();
   }
   final Ref ref;
 
-//start the game
-  void startGame() {
+  @override
+  void dispose() {
+    gameLoopTimer?.cancel();
+    AudioPlayer().dispose();
+    super.dispose();
+  }
+
+//start the game loop and reset
+  void startGame() async {
+    final sound = ref.read(soundProvider);
+    if (sound) {
+      await AudioPlayer().play(AssetSource('initialsetup.mp3'), volume: 0.4);
+      await Future.delayed(const Duration(milliseconds: 1000));
+    }
+    //get the refresh rate from the speed level provider and set the refresh rate
+    final refreshTime = ref.read(speedLevelProvider.notifier).getRefreshRate;
+    state = state.copyWith(isPlaying: true);
     //initialize the board
     currentScore = 0;
     gameBoard = deepCopyBoard(emptyGameBoard);
@@ -54,12 +67,14 @@ class GameController extends StateNotifier<GameState> {
   }
 
   Timer loopGame(Duration refreshRate) {
+    //loop the game every
     return Timer.periodic(
       refreshRate,
       (timer) async {
         //move the piece down
         if (!state.isPaused) {
           clearLine();
+
           checkLanding();
           if (state.gameOver) {
             timer.cancel();
@@ -78,15 +93,20 @@ class GameController extends StateNotifier<GameState> {
     currentScore = 0;
     gameBoard = deepCopyBoard(emptyGameBoard);
     state = state.copyWith(
-        gameBoard: gameBoard, currentScore: currentScore, gameOver: false);
+        gameBoard: gameBoard,
+        currentScore: currentScore,
+        gameOver: false,
+        isPaused: false,
+        currentPiece: currentPiece.initializePiece());
 
     // Cancel the previous timer if it exists
     gameLoopTimer?.cancel();
-
-    createNewPiece();
-    startGame();
+    startingScreen();
+    // createNewPiece();
+    // startGame();
   }
 
+  //Functions To detect collisions
   bool checkCollisions(Direction direction) {
     //check if the piece can move in the direction
     for (int i = 0; i < currentPiece.position.length; i++) {
@@ -113,7 +133,7 @@ class GameController extends StateNotifier<GameState> {
           return true;
         }
       }
-      //check if the piece is at the ends of the board and movements can be done or not
+      //check if the piece is at the ends of the board and left right movements can be done or not
       if (col < 0 || row >= maxRow || col >= maxCol) {
         return true;
       }
@@ -141,9 +161,43 @@ class GameController extends StateNotifier<GameState> {
     }
   }
 
-  void updateHighScore() {
-    final highScore = ref.read(highScoreProvider.notifier);
-    highScore.saveHighScore(state.currentScore);
+  void clearLine() async {
+    int clear = 0;
+    //loop through each row on the board from bottom
+    for (int row = maxRow - 1; row >= 0; row--) {
+      bool canClear = true;
+      //check if the row is full or not by checking each column
+      for (int col = 0; col < maxCol; col++) {
+        if (gameBoard[row][col] == null) {
+          canClear = false;
+          break;
+        }
+      }
+      //if the row is full then clear the row and move the pieces down
+      if (canClear) {
+        clear++;
+        final audio = ref.read(soundProvider);
+        if (audio) {
+          AudioPlayer().play(AssetSource('fastsweep.wav'), volume: 1);
+        }
+        //show clear animation
+        for (int col = 0; col < maxCol; col++) {
+          await _clearCell(row, col, 3);
+        }
+        //move the pieces down row by row
+        for (int i = row; i > 0; i--) {
+          gameBoard[i] = List.from(gameBoard[i - 1]);
+        }
+        //set the top row to null
+        gameBoard[0] = List.generate(maxCol, (col) => null);
+        //increase the score by 100
+        //
+        currentScore += 100;
+        state = state.copyWith(currentScore: currentScore);
+      }
+    }
+    int delay = clear * 8;
+    Future.delayed(Duration(milliseconds: delay));
   }
 
   void createNewPiece() async {
@@ -157,55 +211,35 @@ class GameController extends StateNotifier<GameState> {
     if (await isGameOver()) {
       gameLoopTimer?.cancel();
       updateHighScore();
-      await fillGameBoardOneByOne();
+      state = state.copyWith(isPlaying: false);
+      await createGameOverDisplay();
       // state = state.copyWith(gameOver: true);
       // showGameOverMessage();
     }
   }
 
+  //Check if GAmeOver
   Future<bool> isGameOver() async {
     //if the piece is at the top of the board
+    final sound = ref.read(soundProvider);
     for (int col = 0; col < maxCol; col++) {
       if (gameBoard[0][col] != null) {
-        await AudioPlayer().play(AssetSource('gameover1.mp3'), volume: 1);
+        if (sound) {
+          await AudioPlayer().play(AssetSource('gameover1.mp3'), volume: 1);
+        }
         return true;
       }
     }
     return false;
   }
 
-  void clearLine() {
-    //loop through each row on the board from bottom
-    for (int row = maxRow - 1; row >= 0; row--) {
-      bool canClear = true;
-      //check if the row is full or not by checking each column
-      for (int col = 0; col < maxCol; col++) {
-        if (gameBoard[row][col] == null) {
-          canClear = false;
-          break;
-        }
-      }
-      //if the row is full then clear the row and move the pieces down
-      if (canClear) {
-        //move the pieces down row by row
-        for (int i = row; i > 0; i--) {
-          gameBoard[i] = List.from(gameBoard[i - 1]);
-        }
-        //set the top row to null
-        gameBoard[0] = List.generate(maxCol, (col) => null);
-        //increase the score by 100
-        //
-        currentScore += 500;
-        state = state.copyWith(currentScore: currentScore);
-      }
-    }
+  //update the high score if new high score is achieved
+  void updateHighScore() {
+    final highScore = ref.read(highScoreProvider.notifier);
+    highScore.saveHighScore(state.currentScore);
   }
 
-  //check if the game is over
-
-//show alert dialog box when game is over
-
-  //setting functions
+  //setting functions for controlling features of the game
   void toggleVibration() {
     state = state.copyWith(vibrate: !state.vibrate);
   }
@@ -224,7 +258,7 @@ class GameController extends StateNotifier<GameState> {
     state = state.copyWith(isPaused: !state.isPaused);
   }
 
-  //functions
+  //functions to control movement and orientation of piece
   void rotatePiece() {
     if (!state.isPaused) {
       currentPiece = currentPiece.rotatePiece();
@@ -250,12 +284,9 @@ class GameController extends StateNotifier<GameState> {
     }
   }
 
+//Fuctions to drop teh piece
   void dropPiece() async {
-    if (!state.isPaused || !state.gameOver) {
-      final dropMusic = AudioPlayer();
-      await dropMusic.play(
-        AssetSource('instantdrop.wav'),
-      );
+    if (!state.isPaused) {
       //  Keep moving the piece down until it collides or reaches the bottom
 
       while (!checkCollisions(Direction.down)) {
@@ -268,7 +299,7 @@ class GameController extends StateNotifier<GameState> {
   }
 
   void dropPieceBySteps(int steps) {
-    if (!state.isPaused || !state.gameOver) {
+    if (!state.isPaused) {
       // Move the piece down by the specified number of steps
       for (int i = 0; i < steps; i++) {
         if (!checkCollisions(Direction.down)) {
@@ -283,21 +314,19 @@ class GameController extends StateNotifier<GameState> {
     }
   }
 
-  Future<void> fillGameBoardOneByOne() async {
+  //Display animated grids
+
+  //animation for the Game over
+  //create the game over display
+  Future<void> createGameOverDisplay() async {
     // print('UTSAB: EMPTY $emptyGameBoard');
     // print('UTSAB: GAME $gameBoard');
     // print('UTSAB: STATE (${state.gameBoard})');
     // state = state.copyWith(gameBoard: emptyGameBoard);
-    final audioplayer = AudioPlayer();
+    // final audioplayer = AudioPlayer();
 
     //clears the current piece
-    state = state.copyWith(
-        currentPiece: currentPiece.initializePiece(), gameOver: false);
-
-    //play music
-    // await audioplayer.play(AssetSource('startmusic.mp3'),
-    //     position: const Duration(milliseconds: 2000), volume: 0.6);
-
+    state = state.copyWith(currentPiece: currentPiece.initializePiece());
     //clear the screen first with animation
     for (int row = 0; row < maxRow; row++) {
       for (int col = 0; col < maxCol; col++) {
@@ -348,11 +377,11 @@ class GameController extends StateNotifier<GameState> {
       }
     }
     state = state.copyWith(gameOver: true);
-    audioplayer.stop();
   }
 
 //fuction to fill the cell in board
   Future<void> _fillCell(int row, int col) async {
+    //replace tetromino with current piece
     state.gameBoard[row][col] = state.currentPiece.shape;
     state = state.copyWith(); // Update the state to trigger UI update
     await Future.delayed(
@@ -366,15 +395,32 @@ class GameController extends StateNotifier<GameState> {
     await Future.delayed(Duration(milliseconds: time)); // Delay between cells
   }
 
+  //create the starting screen of the game
+  //Animation for Start up display
+  //function to create the starting screen
   Future<void> startingScreen() async {
+    final sound = ref.read(soundProvider);
+    if (sound) {
+      await AudioPlayer().play(AssetSource('initialsetup.mp3'), volume: 0.6);
+    }
+
     gameBoard = deepCopyBoard(emptyGameBoard);
-    state = state.copyWith(gameBoard: gameBoard);
-    await Future.delayed(const Duration(milliseconds: 2000));
+    state = state.copyWith(
+        gameBoard: gameBoard,
+        isPlaying: false,
+        isPaused: false,
+        gameOver: false);
+
+    //take a pause after a letter is displayed
+    await Future.delayed(const Duration(milliseconds: 600));
+
     // Fill rows below row 4 randomly
     for (int row = maxRow - 1; row >= 5; row--) {
       await _fillRowRandomly(row);
     }
-
+    if (sound) {
+      await AudioPlayer().play(AssetSource('reset.wav'), volume: 0.9);
+    }
     // Fill rows 2, 3, and 4
     for (int col = 0; col < maxCol; col++) {
       if (col == 2 || col == 4 || col == 7) {

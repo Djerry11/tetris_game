@@ -28,6 +28,7 @@ class GameState with _$GameState {
     required bool vibrate,
     required bool isColor,
     required List<Color> screenColor,
+    required bool isPlaying,
   }) = _GameState;
 
   factory GameState.initial() => GameState(
@@ -39,6 +40,7 @@ class GameState with _$GameState {
         isPaused: false,
         vibrate: true,
         isColor: true,
+        isPlaying: false,
         screenColor: [Colors.orangeAccent, Colors.deepPurpleAccent],
       );
 }
@@ -154,7 +156,7 @@ extension PieceExtension on Piece {
     int row = (position / maxCol).floor();
     int col = position % maxCol;
     //return false if the position is occupied in the board
-    if (row < -2 || gameBoard[row][col] != null || col < 0) {
+    if (row < 0 || gameBoard[row][col] != null || col < 0) {
       return false;
     } else {
       return true;

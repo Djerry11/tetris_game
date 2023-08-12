@@ -1,6 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tetris_game/providers/individual_provider.dart';
 
 class CustomButton extends StatefulWidget {
   final VoidCallback onPressed;
@@ -78,86 +80,90 @@ class _CustomButtonState extends State<CustomButton>
                 ],
               ),
             ),
-            GestureDetector(
-              onDoubleTap: widget.onDoubleTap,
-              onTap: () {
-                widget.onPressed();
-                !widget.hasSound
-                    ? widget.type == 'main'
-                        ? buttonhasSound.play(AssetSource('click.wav'))
-                        : buttonhasSound.play(AssetSource('quickmove.wav'))
-                    : {};
-              },
-              onTapDown: (_) {
-                _controller.forward();
-              },
-              onTapUp: (_) {
-                _controller.reverse();
-              },
-              onTapCancel: () {
-                _controller.reverse();
-              },
-              child: AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _animation.value,
-                    child: child,
-                  );
+            Consumer(builder: (context, ref, child) {
+              return GestureDetector(
+                onDoubleTap: widget.onDoubleTap,
+                onTap: () {
+                  widget.onPressed();
+                  if (ref.watch(soundProvider)) {
+                    !widget.hasSound
+                        ? widget.type == 'main'
+                            ? buttonhasSound.play(AssetSource('click.wav'))
+                            : buttonhasSound.play(AssetSource('leftmove.wav'))
+                        : {};
+                  }
                 },
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: [
-                    Container(
-                      height: widget.buttonSize[1],
-                      width: widget.buttonSize[1],
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            widget.colors[2],
-                            widget.colors[3],
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: widget.colors[4],
-                            blurRadius: 4,
-                            blurStyle: BlurStyle.inner,
-                            offset: const Offset(4, 4),
-                            inset: true,
+                onTapDown: (_) {
+                  _controller.forward();
+                },
+                onTapUp: (_) {
+                  _controller.reverse();
+                },
+                onTapCancel: () {
+                  _controller.reverse();
+                },
+                child: AnimatedBuilder(
+                  animation: _animation,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: _animation.value,
+                      child: child,
+                    );
+                  },
+                  child: Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: [
+                      Container(
+                        height: widget.buttonSize[1],
+                        width: widget.buttonSize[1],
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              widget.colors[2],
+                              widget.colors[3],
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                          BoxShadow(
-                            color: widget.colors[5],
-                            blurRadius: 4,
-                            blurStyle: BlurStyle.inner,
-                            offset: const Offset(4, 4),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: widget.buttonSize[2],
-                      width: widget.buttonSize[2],
-                      decoration: BoxDecoration(
-                        backgroundBlendMode: BlendMode.overlay,
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            widget.colors[0],
-                            widget.colors[1],
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.colors[4],
+                              blurRadius: 4,
+                              blurStyle: BlurStyle.inner,
+                              offset: const Offset(4, 4),
+                              inset: true,
+                            ),
+                            BoxShadow(
+                              color: widget.colors[5],
+                              blurRadius: 4,
+                              blurStyle: BlurStyle.inner,
+                              offset: const Offset(4, 4),
+                            ),
                           ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        height: widget.buttonSize[2],
+                        width: widget.buttonSize[2],
+                        decoration: BoxDecoration(
+                          backgroundBlendMode: BlendMode.overlay,
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              widget.colors[0],
+                              widget.colors[1],
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ],
         ),
         Visibility(
@@ -165,9 +171,10 @@ class _CustomButtonState extends State<CustomButton>
           child: Text(
             widget.buttonName ?? '',
             style: TextStyle(
+              fontFamily: 'DSEG14',
               color: widget.textColor,
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
+              fontSize: widget.type == 'main' ? 12 : 6,
+              //fontWeight: FontWeight.bold,
             ),
           ),
         ),

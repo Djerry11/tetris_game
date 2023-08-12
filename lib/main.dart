@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tetris_game/home_screen.dart';
 
 void main() {
@@ -19,12 +18,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tetris',
+
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
-        textTheme: GoogleFonts.vt323TextTheme(
-          Theme.of(context).textTheme,
-        ),
+        fontFamily: 'DSEG14',
       ),
       // home: const Scaffold(
       //   body: TetrisBoard(),

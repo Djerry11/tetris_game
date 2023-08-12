@@ -7,9 +7,6 @@ import 'package:tetris_game/resources/values.dart';
 
 import 'game_control_provider.dart';
 
-final isInitialLaunch = StateProvider<bool>((ref) {
-  return true;
-});
 //Background Color Notifier for the game
 var i = 0;
 
@@ -107,4 +104,43 @@ class HighScoreNotifier extends StateNotifier<int> {
 
 final highScoreProvider = StateNotifierProvider<HighScoreNotifier, int>((ref) {
   return HighScoreNotifier();
+});
+
+//Provider for the sound control
+class SoundNotifier extends StateNotifier<bool> {
+  SoundNotifier() : super(true);
+
+  void toggleSound() {
+    state = !state;
+  }
+}
+
+final soundProvider = StateNotifierProvider<SoundNotifier, bool>((ref) {
+  return SoundNotifier();
+});
+
+//speed level provider
+//changes the screen time
+
+class SpeedLevelNotifier extends StateNotifier<int> {
+  SpeedLevelNotifier() : super(0);
+
+  void increaseSpeedLeve() {
+    if (state < 14 && state >= 0) {
+      state = ++state;
+    }
+  }
+
+  void decreaseSpeedLevel() {
+    if (state > 0 && state <= 14) {
+      state = --state;
+    }
+  }
+
+  int get getRefreshRate => refreshRates[state];
+}
+
+final speedLevelProvider =
+    StateNotifierProvider<SpeedLevelNotifier, int>((ref) {
+  return SpeedLevelNotifier();
 });

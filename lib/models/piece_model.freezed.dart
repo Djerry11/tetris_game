@@ -185,6 +185,7 @@ mixin _$GameState {
   bool get vibrate => throw _privateConstructorUsedError;
   bool get isColor => throw _privateConstructorUsedError;
   List<Color> get screenColor => throw _privateConstructorUsedError;
+  bool get isPlaying => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GameStateCopyWith<GameState> get copyWith =>
@@ -205,7 +206,8 @@ abstract class $GameStateCopyWith<$Res> {
       bool isPaused,
       bool vibrate,
       bool isColor,
-      List<Color> screenColor});
+      List<Color> screenColor,
+      bool isPlaying});
 
   $PieceCopyWith<$Res> get currentPiece;
   $PieceCopyWith<$Res> get nextPiece;
@@ -233,6 +235,7 @@ class _$GameStateCopyWithImpl<$Res, $Val extends GameState>
     Object? vibrate = null,
     Object? isColor = null,
     Object? screenColor = null,
+    Object? isPlaying = null,
   }) {
     return _then(_value.copyWith(
       currentPiece: null == currentPiece
@@ -271,6 +274,10 @@ class _$GameStateCopyWithImpl<$Res, $Val extends GameState>
           ? _value.screenColor
           : screenColor // ignore: cast_nullable_to_non_nullable
               as List<Color>,
+      isPlaying: null == isPlaying
+          ? _value.isPlaying
+          : isPlaying // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -307,7 +314,8 @@ abstract class _$$_GameStateCopyWith<$Res> implements $GameStateCopyWith<$Res> {
       bool isPaused,
       bool vibrate,
       bool isColor,
-      List<Color> screenColor});
+      List<Color> screenColor,
+      bool isPlaying});
 
   @override
   $PieceCopyWith<$Res> get currentPiece;
@@ -335,6 +343,7 @@ class __$$_GameStateCopyWithImpl<$Res>
     Object? vibrate = null,
     Object? isColor = null,
     Object? screenColor = null,
+    Object? isPlaying = null,
   }) {
     return _then(_$_GameState(
       currentPiece: null == currentPiece
@@ -373,6 +382,10 @@ class __$$_GameStateCopyWithImpl<$Res>
           ? _value._screenColor
           : screenColor // ignore: cast_nullable_to_non_nullable
               as List<Color>,
+      isPlaying: null == isPlaying
+          ? _value.isPlaying
+          : isPlaying // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -389,7 +402,8 @@ class _$_GameState implements _GameState {
       required this.isPaused,
       required this.vibrate,
       required this.isColor,
-      required final List<Color> screenColor})
+      required final List<Color> screenColor,
+      required this.isPlaying})
       : _gameBoard = gameBoard,
         _screenColor = screenColor;
 
@@ -424,8 +438,11 @@ class _$_GameState implements _GameState {
   }
 
   @override
+  final bool isPlaying;
+
+  @override
   String toString() {
-    return 'GameState(currentPiece: $currentPiece, nextPiece: $nextPiece, gameBoard: $gameBoard, currentScore: $currentScore, gameOver: $gameOver, isPaused: $isPaused, vibrate: $vibrate, isColor: $isColor, screenColor: $screenColor)';
+    return 'GameState(currentPiece: $currentPiece, nextPiece: $nextPiece, gameBoard: $gameBoard, currentScore: $currentScore, gameOver: $gameOver, isPaused: $isPaused, vibrate: $vibrate, isColor: $isColor, screenColor: $screenColor, isPlaying: $isPlaying)';
   }
 
   @override
@@ -448,7 +465,9 @@ class _$_GameState implements _GameState {
             (identical(other.vibrate, vibrate) || other.vibrate == vibrate) &&
             (identical(other.isColor, isColor) || other.isColor == isColor) &&
             const DeepCollectionEquality()
-                .equals(other._screenColor, _screenColor));
+                .equals(other._screenColor, _screenColor) &&
+            (identical(other.isPlaying, isPlaying) ||
+                other.isPlaying == isPlaying));
   }
 
   @override
@@ -462,7 +481,8 @@ class _$_GameState implements _GameState {
       isPaused,
       vibrate,
       isColor,
-      const DeepCollectionEquality().hash(_screenColor));
+      const DeepCollectionEquality().hash(_screenColor),
+      isPlaying);
 
   @JsonKey(ignore: true)
   @override
@@ -481,7 +501,8 @@ abstract class _GameState implements GameState {
       required final bool isPaused,
       required final bool vibrate,
       required final bool isColor,
-      required final List<Color> screenColor}) = _$_GameState;
+      required final List<Color> screenColor,
+      required final bool isPlaying}) = _$_GameState;
 
   @override
   Piece get currentPiece;
@@ -501,6 +522,8 @@ abstract class _GameState implements GameState {
   bool get isColor;
   @override
   List<Color> get screenColor;
+  @override
+  bool get isPlaying;
   @override
   @JsonKey(ignore: true)
   _$$_GameStateCopyWith<_$_GameState> get copyWith =>

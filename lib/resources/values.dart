@@ -81,3 +81,22 @@ class PieceColor {
 
   get inactivePiece => null;
 }
+
+//refresh rate for the speed of the game
+final List<int> refreshRates = [
+  700, // Level 0
+  650, // Level 1
+  600, // Level 2
+  575, // Level 3
+  530, // Level 4
+  500, // Level 5
+  450, // Level 6
+  410, // Level 7
+  360, // Level 8
+  310, // Level 9
+  275, // Level 10
+  240, // Level 11
+  195, // Level 12
+  150, // Level 13
+  100 // Level 14
+];

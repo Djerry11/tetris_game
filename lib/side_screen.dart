@@ -8,6 +8,7 @@ import 'package:tetris_game/providers/game_control_provider.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
 import 'package:tetris_game/resources/values.dart';
 
+//main side screen for the game
 class SideScreen extends StatelessWidget {
   const SideScreen({
     super.key,
@@ -17,18 +18,18 @@ class SideScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 10,
+        const Spacer(
+          flex: 1,
         ),
         const DisplayScore(
           title: 'HI-SCORE',
         ),
-        const SizedBox(
-          height: 20,
+        const Spacer(
+          flex: 1,
         ),
         const DisplayScore(title: 'SCORE'),
-        const SizedBox(
-          height: 15,
+        const Spacer(
+          flex: 1,
         ),
         Text(
           'Next ',
@@ -44,86 +45,85 @@ class SideScreen extends StatelessWidget {
           height: 10,
         ),
         const NextPieceDisplay(),
-        const SizedBox(
-          height: 15,
+        const Spacer(
+          flex: 2,
         ),
-        Consumer(
-          builder: (context, ref, child) {
-            final gameProvider = ref.watch(gameController);
-            return Visibility(
-              visible: gameProvider.isPaused,
-              child: Column(
-                children: [
-                  Text(
-                    'Paused',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.vt323(
-                      textStyle:
-                          Theme.of(context).textTheme.titleMedium!.copyWith(
-                                color: Colors.black45,
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                  ),
-                  const Icon(
-                    Icons.play_arrow,
-                    color: Colors.black38,
-                    size: 30,
-                  )
-                ],
-              ),
-            );
-          },
+        const DisplayLevel(title: 'SPEED:'),
+        const Spacer(
+          flex: 4,
         ),
-        const SizedBox(
-          height: 15,
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SettingIcon(
+              icon: Icons.pause,
+              // iconOff: Icons.pause,
+              type: 'play',
+            ),
+            SettingIcon(
+              icon: Icons.vibration,
+              // iconOff: Icons.vibration_outlined,
+              type: 'vibration',
+            ),
+            SettingIcon(
+              icon: Icons.volume_up_sharp,
+              //iconOff: Icons.volume_off_sharp,
+              type: 'sound',
+            ),
+          ],
         ),
-        Consumer(
-          builder: (context, ref, child) {
-            return ref.watch(vibrationProvider)
-                ? const Column(
-                    children: [
-                      Text(
-                        'Vibration on',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      Icon(
-                        Icons.vibration,
-                        color: Colors.black38,
-                        size: 30,
-                      )
-                    ],
-                  )
-                : const Column(
-                    children: [
-                      Text(
-                        'Vibration off',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      Icon(
-                        Icons.notifications_off,
-                        color: Colors.black38,
-                        size: 30,
-                      )
-                    ],
-                  );
-          },
-        ),
+        const Spacer(),
       ],
     );
   }
 }
 
+//Display various setting icons
+class SettingIcon extends StatelessWidget {
+  const SettingIcon({
+    super.key,
+    required this.icon,
+    required this.type,
+  });
+  final IconData icon;
+
+  final String type;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        late final bool condition;
+        switch (type) {
+          case 'sound':
+            condition = ref.watch(soundProvider);
+            break;
+          case 'vibration':
+            condition = ref.watch(vibrationProvider);
+            break;
+          case 'play':
+            condition = (ref.watch(gameController).isPaused &&
+                ref.watch(gameController).isPlaying);
+            break;
+        }
+        return condition
+            ? Icon(
+                icon,
+                color: Colors.black87,
+                size: 20,
+              )
+            : Icon(
+                icon,
+                color: Colors.black12,
+                size: 20,
+              );
+      },
+    );
+  }
+}
+
+/// Method for displaying the score
+/// //highScore and Score
 class DisplayScore extends StatelessWidget {
   const DisplayScore({
     super.key,
@@ -138,13 +138,13 @@ class DisplayScore extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          title,
-          style: GoogleFonts.vt323(
-            textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
+          '$title :',
+          style: const TextStyle(
+              fontFamily: 'DSEG14',
+              fontSize: 8,
+              color: Colors.black87,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.6),
         ),
         const SizedBox(
           width: 20,
@@ -156,11 +156,57 @@ class DisplayScore extends StatelessWidget {
           return Text(
             currentScore == 0 ? '000000' : currentScore.toString(),
             textAlign: TextAlign.center,
-            style: GoogleFonts.vt323(
-              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Colors.grey[800],
-                    fontWeight: FontWeight.bold,
-                  ),
+            style: const TextStyle(
+                fontFamily: 'DSEG14',
+                fontSize: 8,
+                color: Colors.black87,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.6),
+          );
+        }),
+
+        //display next piece
+      ],
+    );
+  }
+}
+
+class DisplayLevel extends StatelessWidget {
+  const DisplayLevel({
+    super.key,
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          '$title :',
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -1,
+            fontSize: 10,
+          ),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Consumer(builder: (context, ref, child) {
+          final currentLevel = ref.watch(speedLevelProvider);
+          print('UTSAB : $currentLevel');
+          return Text(
+            currentLevel < 10 ? '0$currentLevel' : currentLevel.toString(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+              letterSpacing: -1,
+              fontSize: 15,
             ),
           );
         }),
@@ -171,6 +217,7 @@ class DisplayScore extends StatelessWidget {
   }
 }
 
+/// Method for displaying the next piece in the side screen
 class NextPieceDisplay extends StatelessWidget {
   const NextPieceDisplay({
     super.key,

@@ -1,5 +1,7 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tetris_game/buttons/cutom_button.dart';
 import 'package:tetris_game/gameover.dart';
 
@@ -25,7 +27,9 @@ class HomeScreen extends StatelessWidget {
 //   bool changeColor = false;
   @override
   Widget build(BuildContext context) {
-    @override
+    const duration = 30;
+    const amplitude = 15;
+
     const backgroundColor = Color.fromARGB(255, 77, 132, 141);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
@@ -153,6 +157,7 @@ class HomeScreen extends StatelessWidget {
                           final gameState = ref.watch(gameController);
                           final vibrate = ref.watch(vibrationProvider);
                           final isPaused = gameState.isPaused;
+                          final isPlaying = gameState.isPlaying;
 
                           return Row(
                             mainAxisSize: MainAxisSize.max,
@@ -164,14 +169,17 @@ class HomeScreen extends StatelessWidget {
                                 onPressed: () {
                                   if (vibrate) {
                                     Vibration.vibrate(
-                                        duration: 50, amplitude: 22);
+                                      duration: duration,
+                                      amplitude: amplitude,
+                                    );
                                   }
                                   ref.read(gameController.notifier).resetGame();
                                 },
                                 buttonSize: ButtonSize().tinyButton,
                                 colors: ButtonColors().resetButton,
                                 buttonName: 'Reset',
-                                textColor: Colors.red,
+                                textColor:
+                                    const Color.fromARGB(255, 225, 31, 17),
                               ),
 
                               const SizedBox(
@@ -179,19 +187,23 @@ class HomeScreen extends StatelessWidget {
                               ),
                               //Pause Button/playbutton
                               CustomButton(
-                                onPressed: () {
-                                  ref
-                                      .read(gameController.notifier)
-                                      .togglePause();
-                                  if (vibrate) {
-                                    Vibration.vibrate(
-                                        duration: 50, amplitude: 22);
-                                  }
-                                },
-                                buttonSize: ButtonSize().tinyButton,
-                                colors: ButtonColors().tinyButton,
-                                buttonName: isPaused ? 'Play' : 'Pause',
-                              ),
+                                  onPressed: () {
+                                    ref
+                                        .read(gameController.notifier)
+                                        .togglePause();
+                                    if (vibrate) {
+                                      Vibration.vibrate(
+                                          duration: amplitude,
+                                          amplitude: duration);
+                                    }
+                                  },
+                                  buttonSize: ButtonSize().tinyButton,
+                                  colors: ButtonColors().tinyButton,
+                                  buttonName: isPlaying
+                                      ? isPaused
+                                          ? 'Play'
+                                          : 'Pause'
+                                      : 'Option'),
                               const SizedBox(
                                 width: 15,
                               ),
@@ -204,7 +216,8 @@ class HomeScreen extends StatelessWidget {
 
                                   if (vibrate) {
                                     Vibration.vibrate(
-                                        duration: 50, amplitude: 22);
+                                        duration: duration,
+                                        amplitude: amplitude);
                                   }
                                 },
                                 buttonSize: ButtonSize().tinyButton,
@@ -214,27 +227,29 @@ class HomeScreen extends StatelessWidget {
                               const SizedBox(
                                 width: 15,
                               ),
-                              //Options Button
+                              //Options Button for sound control
                               CustomButton(
                                 onPressed: () {
                                   ref
-                                      .read(gradientProvider.notifier)
-                                      .toggleBackground();
+                                      .read(soundProvider.notifier)
+                                      .toggleSound();
                                   if (vibrate) {
                                     Vibration.vibrate(
-                                        duration: 50, amplitude: 22);
+                                        duration: duration,
+                                        amplitude: amplitude);
                                   }
                                 },
                                 buttonSize: ButtonSize().tinyButton,
                                 colors: ButtonColors().tinyButton,
-                                buttonName: 'Options',
+                                buttonName: 'Sound',
                                 onDoubleTap: () {
                                   ref
                                       .read(pieceColorProvider.notifier)
                                       .toggleColor();
                                   if (vibrate) {
                                     Vibration.vibrate(
-                                        duration: 50, amplitude: 22);
+                                        duration: duration,
+                                        amplitude: amplitude);
                                   }
                                 },
                               ),
@@ -246,6 +261,8 @@ class HomeScreen extends StatelessWidget {
                   ),
 
                   //Game control buttons
+
+                  //moveent control buttons with different options in differen conditions
                   Expanded(
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -253,111 +270,136 @@ class HomeScreen extends StatelessWidget {
                         Consumer(builder: (context, ref, child) {
                           final gameState = ref.watch(gameController);
                           final vibrate = ref.watch(vibrationProvider);
+                          final sound = ref.watch(soundProvider);
+                          final isPaused = ref.watch(gameController).isPaused;
                           return Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 0, 30, 40),
+                            padding: const EdgeInsets.fromLTRB(5, 0, 30, 30),
                             child: SizedBox(
-                                width: width * 0.5,
+                              width: width * 0.5,
 
-                                //  color: _backgroundColor,
-                                //movement controll buttons
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    //up button//drop down instantly
-                                    CustomButton(
-                                      hasSound: true,
-                                      onPressed: () {
+                              //  color: _backgroundColor,
+                              //movement controll buttons
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  //up button//drop down instantly
+                                  CustomButton(
+                                    onPressed: () {
+                                      if (!gameState.isPlaying) {
+                                        ref
+                                            .read(speedLevelProvider.notifier)
+                                            .increaseSpeedLeve();
+                                      }
+                                      if (gameState.isPlaying && !isPaused) {
+                                        if (sound) {
+                                          AudioPlayer().play(
+                                              AssetSource('instantdrop.wav'),
+                                              volume: 0.5);
+                                        }
                                         ref
                                             .read(gameController.notifier)
                                             .dropPiece();
-                                        if (vibrate) {
-                                          Vibration.vibrate(
-                                            duration: 50,
-                                            amplitude: 16,
-                                          );
-                                        }
-                                      },
-                                      buttonSize: ButtonSize().controlButton,
-                                      colors: ButtonColors().controlButton,
-                                    ),
-                                    //left and right buttons
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        //left button
-                                        CustomButton(
-                                          onPressed: () {
-                                            gameState.isPaused ||
-                                                    ref.watch(isInitialLaunch)
-                                                ? ref
-                                                    .read(gradientProvider
-                                                        .notifier)
-                                                    .toggleBack()
-                                                : ref
-                                                    .read(
-                                                        gameController.notifier)
-                                                    .moveLeft();
-                                            if (vibrate) {
-                                              Vibration.vibrate(
-                                                duration: 50,
-                                                amplitude: 16,
-                                              );
-                                            }
-                                          },
-                                          buttonSize:
-                                              ButtonSize().controlButton,
-                                          colors: ButtonColors().controlButton,
-                                        ),
-                                        const SizedBox(
-                                          width: 60,
-                                        ),
-                                        //right button
-                                        CustomButton(
-                                          onPressed: () {
-                                            gameState.isPaused ||
-                                                    ref.watch(isInitialLaunch)
-                                                ? ref
-                                                    .read(gradientProvider
-                                                        .notifier)
-                                                    .toggleBackground()
-                                                : ref
-                                                    .read(
-                                                        gameController.notifier)
-                                                    .moveRight();
-                                            if (vibrate) {
-                                              Vibration.vibrate(
-                                                duration: 50,
-                                                amplitude: 16,
-                                              );
-                                            }
-                                          },
-                                          buttonSize:
-                                              ButtonSize().controlButton,
-                                          colors: ButtonColors().controlButton,
-                                        ),
-                                      ],
-                                    ),
-                                    //down button
-                                    CustomButton(
-                                      onPressed: () {
+                                      }
+                                      if (vibrate) {
+                                        Vibration.vibrate(
+                                          duration: duration,
+                                          amplitude: amplitude,
+                                        );
+                                      }
+                                    },
+                                    buttonSize: ButtonSize().controlButton,
+                                    colors: ButtonColors().controlButton,
+                                  ),
+                                  //left and right buttons
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      //left button for left movement
+                                      // also control the background color if paused
+                                      CustomButton(
+                                        onPressed: () {
+                                          isPaused
+                                              ? ref
+                                                  .read(
+                                                      gradientProvider.notifier)
+                                                  .toggleBack()
+                                              : ref
+                                                  .read(gameController.notifier)
+                                                  .moveLeft();
+                                          if (vibrate) {
+                                            Vibration.vibrate(
+                                              duration: duration,
+                                              amplitude: amplitude,
+                                            );
+                                          }
+                                        },
+                                        buttonSize: ButtonSize().controlButton,
+                                        colors: ButtonColors().controlButton,
+                                      ),
+                                      const SizedBox(
+                                        width: 60,
+                                      ),
+                                      //right button
+                                      //change theme if paused else move right
+                                      CustomButton(
+                                        onPressed: () {
+                                          isPaused
+                                              ? ref
+                                                  .read(
+                                                      gradientProvider.notifier)
+                                                  .toggleBackground()
+                                              : ref
+                                                  .read(gameController.notifier)
+                                                  .moveRight();
+                                          if (vibrate) {
+                                            Vibration.vibrate(
+                                              duration: duration,
+                                              amplitude: amplitude,
+                                            );
+                                          }
+                                        },
+                                        buttonSize: ButtonSize().controlButton,
+                                        colors: ButtonColors().controlButton,
+                                      ),
+                                    ],
+                                  ),
+                                  //down button
+                                  //decrease the speed level of the game if game is not playing
+                                  CustomButton(
+                                    onPressed: () {
+                                      if (!gameState.isPlaying) {
+                                        ref
+                                            .read(speedLevelProvider.notifier)
+                                            .decreaseSpeedLevel();
+                                      }
+                                      if (gameState.isPlaying && !isPaused) {
                                         ref
                                             .read(gameController.notifier)
                                             .dropPieceBySteps(2);
-                                        if (vibrate) {
-                                          Vibration.vibrate(
-                                            duration: 50,
-                                            amplitude: 16,
-                                          );
-                                        }
-                                      },
-                                      buttonSize: ButtonSize().controlButton,
-                                      colors: ButtonColors().controlButton,
-                                    ),
-                                  ],
-                                )),
+                                      }
+                                      if (vibrate) {
+                                        Vibration.vibrate(
+                                          duration: duration,
+                                          amplitude: amplitude,
+                                        );
+                                      }
+                                    },
+                                    buttonSize: ButtonSize().controlButton,
+                                    colors: ButtonColors().controlButton,
+                                  ),
+                                  Visibility(
+                                      visible:
+                                          (isPaused && gameState.isPlaying) ||
+                                              isPaused,
+                                      child: Text('< Change Theme >',
+                                          style: GoogleFonts.adventPro(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.deepOrangeAccent)))
+                                ],
+                              ),
+                            ),
                           );
                         }),
                         //main button /Rotate button
@@ -370,75 +412,56 @@ class HomeScreen extends StatelessWidget {
                             child: Center(
                               child: Consumer(builder: (context, ref, child) {
                                 final gameState = ref.watch(gameController);
-                                final initialStart = ref.read(isInitialLaunch);
-                                final vibrate = ref.watch(vibrationProvider);
 
-                                return initialStart
+                                final vibrate = ref.watch(vibrationProvider);
+                                final isPaused = gameState.isPaused;
+
+                                ///for the initial start of the game to display the main button as start button
+                                // if paused used as color toggleer
+                                return !isPaused
                                     ? CustomButton(
                                         type: 'main',
                                         onPressed: () {
-                                          ref
-                                              .read(isInitialLaunch.notifier)
-                                              .state = !initialStart;
-                                          ref
-                                              .read(gameController.notifier)
-                                              .startGame();
-
+                                          (!gameState.isPlaying)
+                                              ? ref
+                                                  .read(gameController.notifier)
+                                                  .startGame()
+                                              : ref
+                                                  .read(gameController.notifier)
+                                                  .rotatePiece();
                                           if (vibrate) {
                                             Vibration.vibrate(
-                                              duration: 50,
-                                              amplitude: 18,
+                                              duration: duration,
+                                              amplitude: amplitude,
                                             );
                                           }
                                         },
                                         buttonSize: ButtonSize().mainButton,
                                         colors: ButtonColors().mainButton,
-                                        buttonName: 'Start',
+                                        buttonName: (!gameState.isPlaying)
+                                            ? 'Start'
+                                            : 'Rotate',
+                                        textColor: const Color.fromARGB(
+                                            255, 16, 206, 51),
                                       )
-                                    : gameState.isPaused
-                                        ? CustomButton(
-                                            type: 'main',
-                                            onPressed: () {
-                                              ref
-                                                  .read(pieceColorProvider
-                                                      .notifier)
-                                                  .toggleColor();
-                                              if (vibrate) {
-                                                Vibration.vibrate(
-                                                  duration: 50,
-                                                  amplitude: 18,
-                                                );
-                                              }
-                                            },
-                                            buttonSize: ButtonSize().mainButton,
-                                            colors: ButtonColors().mainButton,
-                                            buttonName: 'Change PieceColor',
-                                          )
-                                        : CustomButton(
-                                            type: 'main',
-                                            onPressed: () async {
-                                              gameState.gameOver || initialStart
-                                                  ? ref
-                                                      .read(gameController
-                                                          .notifier)
-                                                      .resetGame()
-                                                  : ref
-                                                      .read(gameController
-                                                          .notifier)
-                                                      .rotatePiece();
-                                              if (vibrate) {
-                                                await Vibration.vibrate(
-                                                  duration: 40,
-                                                  amplitude: 18,
-                                                );
-                                              }
-                                            },
-                                            buttonSize: ButtonSize().mainButton,
-                                            colors: ButtonColors().mainButton,
-                                            buttonName: gameState.gameOver
-                                                ? 'Start'
-                                                : 'Rotate',
-                                          );
+                                    : CustomButton(
+                                        type: 'main',
+                                        onPressed: () {
+                                          ref
+                                              .read(pieceColorProvider.notifier)
+                                              .toggleColor();
+                                          if (vibrate) {
+                                            Vibration.vibrate(
+                                              duration: duration,
+                                              amplitude: amplitude,
+                                            );
+                                          }
+                                        },
+                                        buttonSize: ButtonSize().mainButton,
+                                        colors: ButtonColors().mainButton,
+                                        buttonName: 'Change Color',
+                                        textColor: Colors.amberAccent,
+                                      );
                               }),
                             ),
                           ),
