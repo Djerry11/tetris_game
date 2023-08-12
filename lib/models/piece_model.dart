@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tetris_game/resources/board_presets.dart';
 import 'package:tetris_game/resources/values.dart';
 
 import '../providers/game_control_provider.dart';
@@ -29,10 +30,10 @@ class GameState with _$GameState {
     required List<Color> screenColor,
   }) = _GameState;
 
-  factory GameState.initial() => const GameState(
-        currentPiece: Piece(shape: Tetromino.I, position: []),
-        nextPiece: Piece(shape: Tetromino.I, position: []),
-        gameBoard: [[]],
+  factory GameState.initial() => GameState(
+        currentPiece: const Piece(shape: Tetromino.I, position: []),
+        nextPiece: const Piece(shape: Tetromino.I, position: []),
+        gameBoard: deepCopyBoard(emptyGameBoard),
         currentScore: 0,
         gameOver: false,
         isPaused: false,

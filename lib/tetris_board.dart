@@ -4,6 +4,7 @@ import 'package:tetris_game/models/piece_model.dart';
 import 'package:tetris_game/pixel.dart';
 import 'package:tetris_game/providers/game_control_provider.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
+import 'package:tetris_game/resources/board_presets.dart';
 
 import 'package:tetris_game/resources/values.dart';
 
@@ -20,14 +21,14 @@ class TetrisBoard extends StatelessWidget {
 
     return Consumer(builder: (context, ref, child) {
       final gameState = ref.watch(gameController);
-      final gameBoard = gameState.gameBoard;
+      final gameBoard = deepCopyBoard(gameState.gameBoard);
       final currentPiece = gameState.currentPiece;
 
       return GridView.builder(
         itemCount: maxRow * maxCol,
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(0),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: maxCol, mainAxisSpacing: 0, crossAxisSpacing: 0),
         itemBuilder: (context, index) {
           int row = (index / maxCol).floor();

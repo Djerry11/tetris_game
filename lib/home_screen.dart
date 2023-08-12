@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tetris_game/buttons/control_button.dart';
 import 'package:tetris_game/buttons/cutom_button.dart';
 import 'package:tetris_game/gameover.dart';
 
@@ -18,12 +17,15 @@ import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart'
 // Import this line
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key}) {
+    // final startMusic = AudioPlayer();
+    // startMusic.play(AssetSource('startmusic.mp3'));
+  }
 
 //   bool changeColor = false;
   @override
   Widget build(BuildContext context) {
-    print('Utsab: HomeScreen: build()');
+    @override
     const backgroundColor = Color.fromARGB(255, 77, 132, 141);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
@@ -33,7 +35,6 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           Consumer(builder: (context, ref, child) {
-            print('Utsab: HomeScreen: Screen bAckground: builder()');
             final gradient = ref.watch(gradientProvider);
             return Container(
               decoration: BoxDecoration(
@@ -256,7 +257,7 @@ class HomeScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(5, 0, 30, 40),
                             child: SizedBox(
                                 width: width * 0.5,
-                                height: 300,
+
                                 //  color: _backgroundColor,
                                 //movement controll buttons
                                 child: Column(
@@ -265,7 +266,8 @@ class HomeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     //up button//drop down instantly
-                                    ControlButton(
+                                    CustomButton(
+                                      hasSound: true,
                                       onPressed: () {
                                         ref
                                             .read(gameController.notifier)
@@ -286,7 +288,7 @@ class HomeScreen extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         //left button
-                                        ControlButton(
+                                        CustomButton(
                                           onPressed: () {
                                             gameState.isPaused ||
                                                     ref.watch(isInitialLaunch)
@@ -313,7 +315,7 @@ class HomeScreen extends StatelessWidget {
                                           width: 60,
                                         ),
                                         //right button
-                                        ControlButton(
+                                        CustomButton(
                                           onPressed: () {
                                             gameState.isPaused ||
                                                     ref.watch(isInitialLaunch)
@@ -339,7 +341,7 @@ class HomeScreen extends StatelessWidget {
                                       ],
                                     ),
                                     //down button
-                                    ControlButton(
+                                    CustomButton(
                                       onPressed: () {
                                         ref
                                             .read(gameController.notifier)
@@ -373,6 +375,7 @@ class HomeScreen extends StatelessWidget {
 
                                 return initialStart
                                     ? CustomButton(
+                                        type: 'main',
                                         onPressed: () {
                                           ref
                                               .read(isInitialLaunch.notifier)
@@ -394,6 +397,7 @@ class HomeScreen extends StatelessWidget {
                                       )
                                     : gameState.isPaused
                                         ? CustomButton(
+                                            type: 'main',
                                             onPressed: () {
                                               ref
                                                   .read(pieceColorProvider
@@ -411,6 +415,7 @@ class HomeScreen extends StatelessWidget {
                                             buttonName: 'Change PieceColor',
                                           )
                                         : CustomButton(
+                                            type: 'main',
                                             onPressed: () async {
                                               gameState.gameOver || initialStart
                                                   ? ref

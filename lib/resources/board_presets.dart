@@ -1,7 +1,24 @@
 import 'package:tetris_game/resources/values.dart';
+
 //dummy board at the launch of the game
 
-List<List<Tetromino?>> initialBoard = [
+List<List<Tetromino?>> deepCopyBoard(List<List<Tetromino?>> originalList) {
+  List<List<Tetromino?>> copiedList = [];
+
+  for (int row = 0; row < originalList.length; row++) {
+    List<Tetromino?> rowList = [];
+    for (int col = 0; col < originalList[row].length; col++) {
+      // Assuming Tetromino is a class that can be copied
+      Tetromino? element =
+          originalList[row][col]; // Use the appropriate copy method here
+      rowList.add(element);
+    }
+    copiedList.add(rowList);
+  }
+  return copiedList;
+}
+
+const List<List<Tetromino?>> initialBoard = [
   [null, null, null, null, null, null, null, null, null, null],
   [null, null, null, null, null, null, null, null, null, null],
   [
@@ -188,4 +205,26 @@ List<List<Tetromino?>> initialBoard = [
     Tetromino.O,
     null
   ]
+];
+const List<List<Tetromino?>> emptyGameBoard = [
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null],
 ];

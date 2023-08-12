@@ -1,26 +1,21 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import 'package:tetris_game/models/piece_model.dart';
+import 'package:tetris_game/providers/individual_provider.dart';
 import 'package:tetris_game/resources/board_presets.dart';
 import 'package:tetris_game/resources/values.dart';
 
-List<List<Tetromino?>> gameBoard = List.generate(
-  maxRow,
-  (row) => List.generate(maxCol, (col) => null),
-);
-late List<List<Tetromino?>> emptyGameBoard;
-
+List<List<Tetromino?>> gameBoard = deepCopyBoard(emptyGameBoard);
 //StateNotifier Provider for the game
 final gameController = StateNotifierProvider<GameController, GameState>((ref) {
-  return GameController();
+  return GameController(ref);
 });
 
 class GameController extends StateNotifier<GameState> {
-  var i = 0;
   Timer? gameLoopTimer;
-
   //create the next piece
   Piece nextPiece =
       Piece(shape: Tetromino.values[Random().nextInt(Tetromino.values.length)]);
@@ -28,19 +23,22 @@ class GameController extends StateNotifier<GameState> {
   late Piece currentPiece;
   int currentScore = 0;
 
-  GameController() : super(GameState.initial()) {
-    state = state.copyWith(gameBoard: initialBoard);
+  GameController(this.ref) : super(GameState.initial()) {
+    final startAudio = AudioPlayer();
+    startAudio.play(AssetSource('initialsetup.mp3'));
+    state = state.copyWith(gameBoard: gameBoard);
+    startingScreen();
   }
+  final Ref ref;
 
+//start the game
   void startGame() {
     //initialize the board
-    gameBoard =
-        List.generate(maxRow, (row) => List.generate(maxCol, (col) => null));
-    state =
-        state.copyWith(gameBoard: gameBoard, currentScore: 0, gameOver: false);
+    currentScore = 0;
+    gameBoard = deepCopyBoard(emptyGameBoard);
+    state = state.copyWith(
+        gameBoard: gameBoard, currentScore: currentScore, gameOver: false);
     //create empty board
-    emptyGameBoard =
-        List.generate(maxRow, (row) => List.generate(maxCol, (col) => null));
     //set the current piece to the next piece
     currentPiece = nextPiece.copyWith().initializePiece();
 
@@ -77,10 +75,10 @@ class GameController extends StateNotifier<GameState> {
   }
 
   void resetGame() {
-    gameBoard =
-        List.generate(maxRow, (row) => List.generate(maxCol, (col) => null));
-    state =
-        state.copyWith(gameBoard: gameBoard, currentScore: 0, gameOver: false);
+    currentScore = 0;
+    gameBoard = deepCopyBoard(emptyGameBoard);
+    state = state.copyWith(
+        gameBoard: gameBoard, currentScore: currentScore, gameOver: false);
 
     // Cancel the previous timer if it exists
     gameLoopTimer?.cancel();
@@ -143,6 +141,11 @@ class GameController extends StateNotifier<GameState> {
     }
   }
 
+  void updateHighScore() {
+    final highScore = ref.read(highScoreProvider.notifier);
+    highScore.saveHighScore(state.currentScore);
+  }
+
   void createNewPiece() async {
     currentPiece = nextPiece.copyWith().initializePiece();
     //create new random piece
@@ -151,19 +154,20 @@ class GameController extends StateNotifier<GameState> {
     nextPiece = Piece(shape: newShape);
     state = state.copyWith(nextPiece: nextPiece);
 //check if the game is over
-    if (isGameOver()) {
+    if (await isGameOver()) {
       gameLoopTimer?.cancel();
-
+      updateHighScore();
       await fillGameBoardOneByOne();
-      state = state.copyWith(gameOver: true);
+      // state = state.copyWith(gameOver: true);
       // showGameOverMessage();
     }
   }
 
-  bool isGameOver() {
+  Future<bool> isGameOver() async {
     //if the piece is at the top of the board
     for (int col = 0; col < maxCol; col++) {
       if (gameBoard[0][col] != null) {
+        await AudioPlayer().play(AssetSource('gameover1.mp3'), volume: 1);
         return true;
       }
     }
@@ -246,9 +250,14 @@ class GameController extends StateNotifier<GameState> {
     }
   }
 
-  void dropPiece() {
-    if (!state.isPaused) {
-      // Keep moving the piece down until it collides or reaches the bottom
+  void dropPiece() async {
+    if (!state.isPaused || !state.gameOver) {
+      final dropMusic = AudioPlayer();
+      await dropMusic.play(
+        AssetSource('instantdrop.wav'),
+      );
+      //  Keep moving the piece down until it collides or reaches the bottom
+
       while (!checkCollisions(Direction.down)) {
         currentPiece = currentPiece.movePiece(Direction.down);
         state = state.copyWith(currentPiece: currentPiece);
@@ -259,7 +268,7 @@ class GameController extends StateNotifier<GameState> {
   }
 
   void dropPieceBySteps(int steps) {
-    if (!state.isPaused) {
+    if (!state.isPaused || !state.gameOver) {
       // Move the piece down by the specified number of steps
       for (int i = 0; i < steps; i++) {
         if (!checkCollisions(Direction.down)) {
@@ -274,33 +283,26 @@ class GameController extends StateNotifier<GameState> {
     }
   }
 
-  //fill animation
-
-  // Future<void> fillGameBoardOneByOne() async {
-  //   for (int row = 0; row < maxRow; row++) {
-  //     for (int col = 0; col < maxCol; col++) {
-  //       state.gameBoard[row][col] = Tetromino.I; // Set the piece
-  //       state = state.copyWith(); // Update the state to trigger UI update
-
-  //       await Future.delayed(
-  //           const Duration(milliseconds: 20)); // Delay between cells
-
-  //       state.gameBoard[row][col] = null; // Clear the cell
-  //       state = state.copyWith(); // Update the state again
-  //     }
-  //   }
-  // }
   Future<void> fillGameBoardOneByOne() async {
     // print('UTSAB: EMPTY $emptyGameBoard');
     // print('UTSAB: GAME $gameBoard');
     // print('UTSAB: STATE (${state.gameBoard})');
-    // state = state.copyWith(currentPiece: currentPiece.initializePiece());
     // state = state.copyWith(gameBoard: emptyGameBoard);
+    final audioplayer = AudioPlayer();
+
+    //clears the current piece
+    state = state.copyWith(
+        currentPiece: currentPiece.initializePiece(), gameOver: false);
+
+    //play music
+    // await audioplayer.play(AssetSource('startmusic.mp3'),
+    //     position: const Duration(milliseconds: 2000), volume: 0.6);
+
     //clear the screen first with animation
     for (int row = 0; row < maxRow; row++) {
       for (int col = 0; col < maxCol; col++) {
         if (state.gameBoard[row][col] != null) {
-          await _clearCell(row, col, 1);
+          await _clearCell(row, col, 2);
         }
       }
     }
@@ -345,6 +347,8 @@ class GameController extends StateNotifier<GameState> {
         await _clearCell(row, col, 1);
       }
     }
+    state = state.copyWith(gameOver: true);
+    audioplayer.stop();
   }
 
 //fuction to fill the cell in board
@@ -352,7 +356,7 @@ class GameController extends StateNotifier<GameState> {
     state.gameBoard[row][col] = state.currentPiece.shape;
     state = state.copyWith(); // Update the state to trigger UI update
     await Future.delayed(
-        const Duration(milliseconds: 4)); // Delay between cells
+        const Duration(milliseconds: 3)); // Delay between cells
   }
 
   //function to clear the cell in board
@@ -360,5 +364,43 @@ class GameController extends StateNotifier<GameState> {
     state.gameBoard[row][col] = null; // Clear the cell
     state = state.copyWith(); // Update the state to trigger UI update
     await Future.delayed(Duration(milliseconds: time)); // Delay between cells
+  }
+
+  Future<void> startingScreen() async {
+    gameBoard = deepCopyBoard(emptyGameBoard);
+    state = state.copyWith(gameBoard: gameBoard);
+    await Future.delayed(const Duration(milliseconds: 2000));
+    // Fill rows below row 4 randomly
+    for (int row = maxRow - 1; row >= 5; row--) {
+      await _fillRowRandomly(row);
+    }
+
+    // Fill rows 2, 3, and 4
+    for (int col = 0; col < maxCol; col++) {
+      if (col == 2 || col == 4 || col == 7) {
+        await Future.delayed(const Duration(milliseconds: 150));
+      }
+      await _fillRowAlternating(col);
+    }
+
+    // Stop music
+  }
+
+  Future<void> _fillRowRandomly(int row) async {
+    for (int col = 0; col < maxCol; col++) {
+      state.gameBoard[row][col] = initialBoard[row][col]; // Set the piece
+      state = state.copyWith(); // Update the state to trigger UI update
+      await Future.delayed(
+          const Duration(milliseconds: 2)); // Delay between cells
+    }
+  }
+
+  Future<void> _fillRowAlternating(int col) async {
+    for (int row = 4; row > 1; row--) {
+      state.gameBoard[row][col] = initialBoard[row][col]; // Set the piece
+      state = state.copyWith();
+      await Future.delayed(
+          const Duration(milliseconds: 5)); // Delay between cells
+    }
   }
 }

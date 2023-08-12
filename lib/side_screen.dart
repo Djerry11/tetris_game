@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tetris_game/models/piece_model.dart';
 import 'package:tetris_game/pixel.dart';
 
@@ -16,138 +17,66 @@ class SideScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 25,
-            ),
-            const Row(
-              children: [
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  'Score: ',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                ),
-                Consumer(builder: (context, ref, child) {
-                  final currentScore = ref.watch(scoreProvider);
-
-                  return Text(
-                    '$currentScore',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black45,
-                    ),
-                  );
-                }),
-              ],
-            ),
-            const SizedBox(
-              height: 60,
-            ),
-            //display next piece
-            const Text(
-              'Next :',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                  color: Colors.black26,
-                  width: 1,
-                ),
-              ),
-              width: 80,
-              height: 40,
-              child: Consumer(builder: (context, ref, child) {
-                final nextPiece =
-                    ref.watch(nextPieceProvider).initializeNextPiece();
-                return GridView.builder(
-                  itemCount: 8,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(0),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      mainAxisSpacing: 0,
-                      crossAxisSpacing: 0),
-                  itemBuilder: (context, index) {
-                    if (nextPiece.position.contains(index)) {
-                      return Consumer(
-                        builder: (context, ref, child) {
-                          final colorMode = ref.watch(pieceColorProvider);
-                          return colorMode
-                              ? Pixel(
-                                  colors: tetrominoColor[nextPiece.shape]!,
-                                )
-                              : Pixel(
-                                  colors: PieceColor().activePiece,
-                                );
-                        },
-                      );
-                    } else {
-                      return Pixel(
-                        colors: PieceColor().bgPiece,
-                      );
-                    }
-                  },
-                );
-              }),
-            ),
-          ],
+        const SizedBox(
+          height: 10,
+        ),
+        const DisplayScore(
+          title: 'HI-SCORE',
         ),
         const SizedBox(
-          height: 50,
+          height: 20,
+        ),
+        const DisplayScore(title: 'SCORE'),
+        const SizedBox(
+          height: 15,
+        ),
+        Text(
+          'Next ',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.vt323(
+            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        const NextPieceDisplay(),
+        const SizedBox(
+          height: 15,
         ),
         Consumer(
           builder: (context, ref, child) {
             final gameProvider = ref.watch(gameController);
-            return gameProvider.isPaused
-                ? const Column(
-                    children: [
-                      Text(
-                        'Paused',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Icon(
-                        Icons.play_arrow,
-                        color: Colors.black38,
-                        size: 30,
-                      )
-                    ],
+            return Visibility(
+              visible: gameProvider.isPaused,
+              child: Column(
+                children: [
+                  Text(
+                    'Paused',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.vt323(
+                      textStyle:
+                          Theme.of(context).textTheme.titleMedium!.copyWith(
+                                color: Colors.black45,
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.play_arrow,
+                    color: Colors.black38,
+                    size: 30,
                   )
-                : Container();
+                ],
+              ),
+            );
           },
+        ),
+        const SizedBox(
+          height: 15,
         ),
         Consumer(
           builder: (context, ref, child) {
@@ -158,7 +87,7 @@ class SideScreen extends StatelessWidget {
                         'Vibration on',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black54,
                         ),
@@ -176,7 +105,7 @@ class SideScreen extends StatelessWidget {
                         'Vibration off',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black54,
                         ),
@@ -191,6 +120,104 @@ class SideScreen extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class DisplayScore extends StatelessWidget {
+  const DisplayScore({
+    super.key,
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.vt323(
+            textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Consumer(builder: (context, ref, child) {
+          final currentScore = title == 'SCORE'
+              ? ref.watch(scoreProvider)
+              : ref.watch(highScoreProvider);
+          return Text(
+            currentScore == 0 ? '000000' : currentScore.toString(),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.vt323(
+              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          );
+        }),
+
+        //display next piece
+      ],
+    );
+  }
+}
+
+class NextPieceDisplay extends StatelessWidget {
+  const NextPieceDisplay({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+          color: Colors.black26,
+          width: 1,
+        ),
+      ),
+      width: 80,
+      height: 40,
+      child: Consumer(builder: (context, ref, child) {
+        final nextPiece = ref.watch(nextPieceProvider).initializeNextPiece();
+        return GridView.builder(
+          itemCount: 8,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(0),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4, mainAxisSpacing: 0, crossAxisSpacing: 0),
+          itemBuilder: (context, index) {
+            if (nextPiece.position.contains(index)) {
+              return Consumer(
+                builder: (context, ref, child) {
+                  final colorMode = ref.watch(pieceColorProvider);
+                  return colorMode
+                      ? Pixel(
+                          colors: tetrominoColor[nextPiece.shape]!,
+                        )
+                      : Pixel(
+                          colors: PieceColor().activePiece,
+                        );
+                },
+              );
+            } else {
+              return Pixel(
+                colors: PieceColor().bgPiece,
+              );
+            }
+          },
+        );
+      }),
     );
   }
 }

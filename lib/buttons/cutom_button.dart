@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
@@ -8,7 +9,8 @@ class CustomButton extends StatefulWidget {
   final String? buttonName;
   final Color? textColor;
   final VoidCallback? onDoubleTap;
-
+  final String type;
+  final bool hasSound;
   const CustomButton({
     Key? key,
     required this.onPressed,
@@ -17,6 +19,8 @@ class CustomButton extends StatefulWidget {
     this.buttonName,
     this.textColor,
     this.onDoubleTap,
+    this.type = 'tiny',
+    this.hasSound = false,
   }) : super(key: key);
 
   @override
@@ -46,6 +50,7 @@ class _CustomButtonState extends State<CustomButton>
 
   @override
   Widget build(BuildContext context) {
+    final buttonhasSound = AudioPlayer();
     return Column(
       children: [
         Stack(
@@ -75,7 +80,14 @@ class _CustomButtonState extends State<CustomButton>
             ),
             GestureDetector(
               onDoubleTap: widget.onDoubleTap,
-              onTap: widget.onPressed,
+              onTap: () {
+                widget.onPressed();
+                !widget.hasSound
+                    ? widget.type == 'main'
+                        ? buttonhasSound.play(AssetSource('click.wav'))
+                        : buttonhasSound.play(AssetSource('quickmove.wav'))
+                    : {};
+              },
               onTapDown: (_) {
                 _controller.forward();
               },
@@ -148,12 +160,15 @@ class _CustomButtonState extends State<CustomButton>
             ),
           ],
         ),
-        Text(
-          widget.buttonName ?? '',
-          style: TextStyle(
-            color: widget.textColor,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
+        Visibility(
+          visible: widget.buttonName != null,
+          child: Text(
+            widget.buttonName ?? '',
+            style: TextStyle(
+              color: widget.textColor,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],

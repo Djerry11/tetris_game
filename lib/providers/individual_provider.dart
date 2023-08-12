@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tetris_game/models/piece_model.dart';
 import 'package:tetris_game/resources/values.dart';
 
@@ -77,4 +78,33 @@ class VibrationNotifier extends StateNotifier<bool> {
 
 final vibrationProvider = StateNotifierProvider<VibrationNotifier, bool>((ref) {
   return VibrationNotifier();
+});
+
+//for managing the high score using shared preferences
+class HighScoreNotifier extends StateNotifier<int> {
+  HighScoreNotifier() : super(0) {
+    _loadHighScore();
+  }
+
+  Future<void> _loadHighScore() async {
+    final prefs = await SharedPreferences.getInstance();
+    final highScore = prefs.getInt('highScore') ?? 0;
+    state = highScore;
+  }
+
+  Future<void> _updateHighScore(int score) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('highScore', score);
+    state = score;
+  }
+
+  void saveHighScore(int newScore) {
+    if (newScore > state) {
+      _updateHighScore(newScore);
+    }
+  }
+}
+
+final highScoreProvider = StateNotifierProvider<HighScoreNotifier, int>((ref) {
+  return HighScoreNotifier();
 });
