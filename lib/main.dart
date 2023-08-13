@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       // home: const Scaffold(
       //   body: TetrisBoard(),
       // ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

@@ -16,6 +16,13 @@ final gameController = StateNotifierProvider<GameController, GameState>((ref) {
 });
 
 class GameController extends StateNotifier<GameState> {
+  GameController(this.ref) : super(GameState.initial()) {
+    state = state.copyWith(gameBoard: gameBoard);
+    startingScreen();
+  }
+
+  final Ref ref;
+  //local variables
   Timer? gameLoopTimer;
   //create the next piece
   Piece nextPiece =
@@ -23,12 +30,6 @@ class GameController extends StateNotifier<GameState> {
 
   late Piece currentPiece;
   int currentScore = 0;
-
-  GameController(this.ref) : super(GameState.initial()) {
-    state = state.copyWith(gameBoard: gameBoard);
-    startingScreen();
-  }
-  final Ref ref;
 
   @override
   void dispose() {
@@ -49,7 +50,7 @@ class GameController extends StateNotifier<GameState> {
     }
     //get the refresh rate from the speed level provider and set the refresh rate
     final refreshTime = ref.read(speedLevelProvider.notifier).getRefreshRate;
-    state = state.copyWith(isPlaying: true);
+    state = state.copyWith(isPlaying: true, disableButton: false);
     //initialize the board
     currentScore = 0;
     final levelBoard = deepCopyBoard(ref.read(levelBoardProvider).gameBoard);

@@ -19,10 +19,7 @@ import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart'
 // Import this line
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key}) {
-    // final startMusic = AudioPlayer();
-    // startMusic.play(AssetSource('startmusic.mp3'));
-  }
+  const HomeScreen({super.key});
 
 //   bool changeColor = false;
   @override
@@ -243,16 +240,6 @@ class HomeScreen extends StatelessWidget {
                                 buttonSize: ButtonSize().tinyButton,
                                 colors: ButtonColors().tinyButton,
                                 buttonName: 'Sound',
-                                onDoubleTap: () {
-                                  ref
-                                      .read(pieceColorProvider.notifier)
-                                      .toggleColor();
-                                  if (vibrate) {
-                                    Vibration.vibrate(
-                                        duration: duration,
-                                        amplitude: amplitude);
-                                  }
-                                },
                               ),
                             ],
                           );
@@ -415,8 +402,8 @@ class HomeScreen extends StatelessWidget {
                                           (isPaused)
                                               ? (isPlaying)
                                                   ? '< Change Theme >\n '
-                                                  : '< Change Theme >\n Change Speed '
-                                              : '< Change Level >\n Change Speed ',
+                                                  : '  Change Speed \n< Change Theme > '
+                                              : '  Change Speed \n< Change Level >',
                                           style: GoogleFonts.adventPro(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
@@ -444,8 +431,26 @@ class HomeScreen extends StatelessWidget {
 
                                 ///for the initial start of the game to display the main button as start button
                                 // if paused used as color toggleer
-                                return (!isPaused && gameState.isPlaying)
+                                return (gameState.isPlaying && !isPaused)
                                     ? CustomButton(
+                                        type: 'main',
+                                        onPressed: () {
+                                          ref
+                                              .read(gameController.notifier)
+                                              .rotatePiece();
+                                          if (vibrate) {
+                                            Vibration.vibrate(
+                                              duration: duration,
+                                              amplitude: amplitude,
+                                            );
+                                          }
+                                        },
+                                        buttonSize: ButtonSize().mainButton,
+                                        colors: ButtonColors().mainButton,
+                                        buttonName: 'Rotate',
+                                        textColor: Colors.amberAccent,
+                                      )
+                                    : CustomButton(
                                         type: 'main',
                                         onPressed: () {
                                           (isPaused)
@@ -470,25 +475,7 @@ class HomeScreen extends StatelessWidget {
                                             ? 'Start'
                                             : 'Change ColorMode',
                                         textColor: const Color.fromARGB(
-                                            255, 16, 206, 51),
-                                      )
-                                    : CustomButton(
-                                        type: 'main',
-                                        onPressed: () {
-                                          ref
-                                              .read(gameController.notifier)
-                                              .rotatePiece();
-                                          if (vibrate) {
-                                            Vibration.vibrate(
-                                              duration: duration,
-                                              amplitude: amplitude,
-                                            );
-                                          }
-                                        },
-                                        buttonSize: ButtonSize().mainButton,
-                                        colors: ButtonColors().mainButton,
-                                        buttonName: 'Rotate',
-                                        textColor: Colors.amberAccent,
+                                            255, 228, 57, 5),
                                       );
                               }),
                             ),

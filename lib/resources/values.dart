@@ -56,13 +56,19 @@ const Map<Tetromino, List<Color>> tetrominoColor = {
 };
 
 List<List<Color>> colorGradients = [
-  [const Color(0xFF42275a), const Color(0xFF734b6d)],
-  [const Color(0xFFffafbd), const Color(0xFFffc3a0)],
+  [const Color.fromARGB(255, 138, 84, 185), const Color(0xFF734b6d)],
+  [
+    const Color.fromARGB(255, 216, 109, 127),
+    const Color.fromARGB(255, 133, 63, 22)
+  ],
   [const Color(0xFF2193b0), const Color.fromARGB(255, 14, 68, 80)],
   [const Color(0xFFcc2b5e), const Color(0xFF753a88)],
-  [const Color(0xFFee9ca7), const Color(0xFFffdde1)],
+  [
+    const Color.fromARGB(255, 133, 76, 84),
+    const Color.fromARGB(255, 80, 25, 32)
+  ],
   [const Color(0xFFbdc3c7), const Color(0xFF2c3e50)],
-  [const Color(0xFFde6262), const Color(0xFFffb88c)],
+  [const Color(0xFFde6262), const Color.fromARGB(255, 94, 47, 18)],
   [const Color.fromARGB(255, 235, 247, 247), const Color(0xFF48b1bf)],
 ];
 
@@ -84,12 +90,12 @@ class PieceColor {
 
 //refresh rate for the speed of the game
 final List<int> refreshRates = [
-  700, // Level 0
+  // Level 0
   650, // Level 1
   600, // Level 2
   575, // Level 3
   530, // Level 4
-  500, // Level 5
+  480, // Level 5
   450, // Level 6
   410, // Level 7
   360, // Level 8
@@ -98,5 +104,6 @@ final List<int> refreshRates = [
   240, // Level 11
   195, // Level 12
   150, // Level 13
-  100 // Level 14
+  100, // Level 14
+  75,
 ];

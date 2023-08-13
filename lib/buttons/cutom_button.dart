@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tetris_game/providers/game_control_provider.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
 
 class CustomButton extends StatefulWidget {
@@ -12,7 +11,7 @@ class CustomButton extends StatefulWidget {
   final List<Color> colors;
   final String? buttonName;
   final Color? textColor;
-  final VoidCallback? onDoubleTap;
+
   final String type;
   final bool hasSound;
   const CustomButton({
@@ -22,7 +21,6 @@ class CustomButton extends StatefulWidget {
     required this.colors,
     this.buttonName,
     this.textColor,
-    this.onDoubleTap,
     this.type = 'tiny',
     this.hasSound = false,
   }) : super(key: key);
@@ -48,6 +46,7 @@ class _CustomButtonState extends State<CustomButton>
 
   @override
   void dispose() {
+    AudioPlayer().dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -84,21 +83,17 @@ class _CustomButtonState extends State<CustomButton>
             ),
             Consumer(builder: (context, ref, child) {
               return GestureDetector(
-                onDoubleTap: () {
-                  if (!ref.watch(gameController).disableButton) {
-                    widget.onDoubleTap!();
-                  }
-                },
                 onTap: () {
-                  if (!ref.watch(gameController).disableButton) {
+                  if (!ref.watch(disableButtonProvider)) {
                     widget.onPressed();
 
                     if (ref.watch(soundProvider)) {
                       !widget.hasSound
                           ? widget.type == 'main'
                               ? buttonhasSound.play(AssetSource('click.wav'))
-                              : buttonhasSound
-                                  .play(AssetSource('rightmove.wav'))
+                              : buttonhasSound.play(
+                                  AssetSource('cw_sound29.wav'),
+                                  volume: 0.5)
                           : {};
                     }
                   }
@@ -179,14 +174,14 @@ class _CustomButtonState extends State<CustomButton>
         Visibility(
           visible: widget.buttonName != null,
           child: Padding(
-            padding: EdgeInsets.only(top: widget.type == 'main' ? 8 : 3),
+            padding: EdgeInsets.only(top: widget.type == 'main' ? 5 : 0),
             child: Text(
               widget.buttonName ?? '',
-              style: GoogleFonts.adventPro(
-                color: widget.textColor,
-                fontSize: widget.type == 'main' ? 14 : 6,
-                //fontWeight: FontWeight.bold,
-              ),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.vt323(
+                  color: widget.textColor,
+                  fontSize: widget.type == 'main' ? 30 : 9,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
