@@ -144,3 +144,26 @@ final speedLevelProvider =
     StateNotifierProvider<SpeedLevelNotifier, int>((ref) {
   return SpeedLevelNotifier();
 });
+
+//game level provider for the game
+class GameLevelNotifier extends StateNotifier<int> {
+  GameLevelNotifier() : super(0);
+
+  void increaseGameLevel() {
+    if (state < 14 && state >= 0) {
+      state = ++state;
+    }
+  }
+
+  void decreaseGameLevel() {
+    if (state > 0 && state <= 14) {
+      state = --state;
+    }
+  }
+
+  int get getGameLevel => state;
+}
+
+final gameLevelProvider = StateNotifierProvider<GameLevelNotifier, int>((ref) {
+  return GameLevelNotifier();
+});

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tetris_game/models/piece_model.dart';
 import 'package:tetris_game/pixel.dart';
 
@@ -16,43 +15,49 @@ class SideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        const Spacer(
-          flex: 1,
-        ),
-        const DisplayScore(
-          title: 'HI-SCORE',
-        ),
-        const Spacer(
-          flex: 1,
-        ),
-        const DisplayScore(title: 'SCORE'),
-        const Spacer(
-          flex: 1,
-        ),
-        Text(
-          'Next ',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.vt323(
-            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        const NextPieceDisplay(),
-        const Spacer(
+        Spacer(
           flex: 2,
         ),
-        const DisplayLevel(title: 'SPEED:'),
-        const Spacer(
-          flex: 4,
+        DisplayScore(
+          title: 'HI-SCORE',
         ),
-        const Row(
+        Spacer(
+          flex: 2,
+        ),
+        DisplayScore(title: 'SCORE'),
+        Spacer(
+          flex: 2,
+        ),
+        Text(
+          'NEXT : ',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -2,
+          ),
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2),
+          child: NextPieceDisplay(),
+        ),
+        Spacer(
+          flex: 2,
+        ),
+        DisplayLevel(title: 'SPEED:'),
+        Spacer(
+          flex: 1,
+        ),
+        DisplayLevel(title: 'LEVEL:'),
+        Spacer(
+          flex: 1,
+        ),
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SettingIcon(
@@ -72,7 +77,7 @@ class SideScreen extends StatelessWidget {
             ),
           ],
         ),
-        const Spacer(),
+        Spacer(),
       ],
     );
   }
@@ -137,18 +142,19 @@ class DisplayScore extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          '$title :',
-          style: const TextStyle(
-              fontFamily: 'DSEG14',
-              fontSize: 8,
-              color: Colors.black87,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.6),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            '$title :',
+            style: const TextStyle(
+                fontFamily: 'DSEG14',
+                fontSize: 8,
+                color: Colors.black87,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.6),
+          ),
         ),
-        const SizedBox(
-          width: 20,
-        ),
+
         Consumer(builder: (context, ref, child) {
           final currentScore = title == 'SCORE'
               ? ref.watch(scoreProvider)
@@ -159,7 +165,7 @@ class DisplayScore extends StatelessWidget {
             style: const TextStyle(
                 fontFamily: 'DSEG14',
                 fontSize: 8,
-                color: Colors.black87,
+                color: Colors.black54,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.6),
           );
@@ -193,23 +199,25 @@ class DisplayLevel extends StatelessWidget {
             fontSize: 10,
           ),
         ),
-        const SizedBox(
-          width: 20,
+
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Consumer(builder: (context, ref, child) {
+            final currentLevel = title == 'SPEED:'
+                ? ref.watch(speedLevelProvider)
+                : ref.watch(gameLevelProvider);
+            return Text(
+              currentLevel < 10 ? '0$currentLevel' : currentLevel.toString(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+                letterSpacing: -1,
+                fontSize: 15,
+              ),
+            );
+          }),
         ),
-        Consumer(builder: (context, ref, child) {
-          final currentLevel = ref.watch(speedLevelProvider);
-          print('UTSAB : $currentLevel');
-          return Text(
-            currentLevel < 10 ? '0$currentLevel' : currentLevel.toString(),
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
-              letterSpacing: -1,
-              fontSize: 15,
-            ),
-          );
-        }),
 
         //display next piece
       ],
