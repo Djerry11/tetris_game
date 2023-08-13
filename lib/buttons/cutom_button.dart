@@ -2,6 +2,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tetris_game/providers/game_control_provider.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
 
 class CustomButton extends StatefulWidget {
@@ -82,15 +84,23 @@ class _CustomButtonState extends State<CustomButton>
             ),
             Consumer(builder: (context, ref, child) {
               return GestureDetector(
-                onDoubleTap: widget.onDoubleTap,
+                onDoubleTap: () {
+                  if (!ref.watch(gameController).disableButton) {
+                    widget.onDoubleTap!();
+                  }
+                },
                 onTap: () {
-                  widget.onPressed();
-                  if (ref.watch(soundProvider)) {
-                    !widget.hasSound
-                        ? widget.type == 'main'
-                            ? buttonhasSound.play(AssetSource('click.wav'))
-                            : buttonhasSound.play(AssetSource('leftmove.wav'))
-                        : {};
+                  if (!ref.watch(gameController).disableButton) {
+                    widget.onPressed();
+
+                    if (ref.watch(soundProvider)) {
+                      !widget.hasSound
+                          ? widget.type == 'main'
+                              ? buttonhasSound.play(AssetSource('click.wav'))
+                              : buttonhasSound
+                                  .play(AssetSource('rightmove.wav'))
+                          : {};
+                    }
                   }
                 },
                 onTapDown: (_) {
@@ -168,13 +178,15 @@ class _CustomButtonState extends State<CustomButton>
         ),
         Visibility(
           visible: widget.buttonName != null,
-          child: Text(
-            widget.buttonName ?? '',
-            style: TextStyle(
-              fontFamily: 'DSEG14',
-              color: widget.textColor,
-              fontSize: widget.type == 'main' ? 12 : 6,
-              //fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: EdgeInsets.only(top: widget.type == 'main' ? 8 : 3),
+            child: Text(
+              widget.buttonName ?? '',
+              style: GoogleFonts.adventPro(
+                color: widget.textColor,
+                fontSize: widget.type == 'main' ? 14 : 6,
+                //fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),

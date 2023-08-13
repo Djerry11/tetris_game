@@ -29,6 +29,7 @@ class GameState with _$GameState {
     required bool isColor,
     required List<Color> screenColor,
     required bool isPlaying,
+    required bool disableButton,
   }) = _GameState;
 
   factory GameState.initial() => GameState(
@@ -42,6 +43,7 @@ class GameState with _$GameState {
         isColor: true,
         isPlaying: false,
         screenColor: [Colors.orangeAccent, Colors.deepPurpleAccent],
+        disableButton: false,
       );
 }
 

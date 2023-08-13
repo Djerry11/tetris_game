@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'package:tetris_game/models/piece_model.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
+import 'package:tetris_game/providers/level_board_provider.dart';
 import 'package:tetris_game/resources/board_presets.dart';
 import 'package:tetris_game/resources/values.dart';
 
@@ -38,6 +39,9 @@ class GameController extends StateNotifier<GameState> {
 
 //start the game loop and reset
   void startGame() async {
+    final level = ref.read(gameLevelProvider);
+    await ref.read(levelBoardProvider.notifier).gameLevel(level);
+
     final sound = ref.read(soundProvider);
     if (sound) {
       await AudioPlayer().play(AssetSource('initialsetup.mp3'), volume: 0.4);
@@ -48,7 +52,8 @@ class GameController extends StateNotifier<GameState> {
     state = state.copyWith(isPlaying: true);
     //initialize the board
     currentScore = 0;
-    gameBoard = deepCopyBoard(emptyGameBoard);
+    final levelBoard = deepCopyBoard(ref.read(levelBoardProvider).gameBoard);
+    gameBoard = deepCopyBoard(levelBoard);
     state = state.copyWith(
         gameBoard: gameBoard, currentScore: currentScore, gameOver: false);
     //create empty board
@@ -181,6 +186,7 @@ class GameController extends StateNotifier<GameState> {
           AudioPlayer().play(AssetSource('fastsweep.wav'), volume: 1);
         }
         //show clear animation
+
         for (int col = 0; col < maxCol; col++) {
           await _clearCell(row, col, 3);
         }
@@ -326,7 +332,8 @@ class GameController extends StateNotifier<GameState> {
     // final audioplayer = AudioPlayer();
 
     //clears the current piece
-    state = state.copyWith(currentPiece: currentPiece.initializePiece());
+    state = state.copyWith(
+        currentPiece: currentPiece.initializePiece(), disableButton: true);
     //clear the screen first with animation
     for (int row = 0; row < maxRow; row++) {
       for (int col = 0; col < maxCol; col++) {
@@ -376,7 +383,10 @@ class GameController extends StateNotifier<GameState> {
         await _clearCell(row, col, 1);
       }
     }
-    state = state.copyWith(gameOver: true);
+    state = state.copyWith(
+      gameOver: true,
+      disableButton: false,
+    );
   }
 
 //fuction to fill the cell in board
@@ -406,10 +416,13 @@ class GameController extends StateNotifier<GameState> {
 
     gameBoard = deepCopyBoard(emptyGameBoard);
     state = state.copyWith(
-        gameBoard: gameBoard,
-        isPlaying: false,
-        isPaused: false,
-        gameOver: false);
+      currentPiece: state.currentPiece.initializePiece(),
+      gameBoard: gameBoard,
+      isPlaying: false,
+      isPaused: false,
+      gameOver: false,
+      disableButton: true,
+    );
 
     //take a pause after a letter is displayed
     await Future.delayed(const Duration(milliseconds: 600));
@@ -428,8 +441,8 @@ class GameController extends StateNotifier<GameState> {
       }
       await _fillRowAlternating(col);
     }
-
-    // Stop music
+    //enable buttons
+    state = state.copyWith(disableButton: false);
   }
 
   Future<void> _fillRowRandomly(int row) async {

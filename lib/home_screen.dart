@@ -55,6 +55,7 @@ class HomeScreen extends StatelessWidget {
             width: double.infinity,
             child: SafeArea(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   //Display Screen for the game
                   Padding(
@@ -271,133 +272,158 @@ class HomeScreen extends StatelessWidget {
                           final gameState = ref.watch(gameController);
                           final vibrate = ref.watch(vibrationProvider);
                           final sound = ref.watch(soundProvider);
-                          final isPaused = ref.watch(gameController).isPaused;
+                          final isPaused = gameState.isPaused;
+                          final isPlaying = gameState.isPlaying;
                           return Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 0, 30, 30),
+                            padding: const EdgeInsets.fromLTRB(5, 0, 30, 20),
                             child: SizedBox(
                               width: width * 0.5,
 
                               //  color: _backgroundColor,
                               //movement controll buttons
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  //up button//drop down instantly
-                                  CustomButton(
-                                    onPressed: () {
-                                      if (!gameState.isPlaying) {
-                                        ref
-                                            .read(speedLevelProvider.notifier)
-                                            .increaseSpeedLeve();
-                                      }
-                                      if (gameState.isPlaying && !isPaused) {
-                                        if (sound) {
-                                          AudioPlayer().play(
-                                              AssetSource('instantdrop.wav'),
-                                              volume: 0.5);
+                              child: Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    //up button//drop down instantly
+                                    //increase the speed of the game
+                                    CustomButton(
+                                      onPressed: () {
+                                        if (!isPlaying) {
+                                          ref
+                                              .read(speedLevelProvider.notifier)
+                                              .increaseSpeedLeve();
                                         }
-                                        ref
-                                            .read(gameController.notifier)
-                                            .dropPiece();
-                                      }
-                                      if (vibrate) {
-                                        Vibration.vibrate(
-                                          duration: duration,
-                                          amplitude: amplitude,
-                                        );
-                                      }
-                                    },
-                                    buttonSize: ButtonSize().controlButton,
-                                    colors: ButtonColors().controlButton,
-                                  ),
-                                  //left and right buttons
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      //left button for left movement
-                                      // also control the background color if paused
-                                      CustomButton(
-                                        onPressed: () {
-                                          isPaused
-                                              ? ref
-                                                  .read(
-                                                      gradientProvider.notifier)
-                                                  .toggleBack()
-                                              : ref
-                                                  .read(gameController.notifier)
-                                                  .moveLeft();
-                                          if (vibrate) {
-                                            Vibration.vibrate(
-                                              duration: duration,
-                                              amplitude: amplitude,
-                                            );
+                                        if (isPlaying && !isPaused) {
+                                          if (sound) {
+                                            AudioPlayer().play(
+                                                AssetSource('instantdrop.wav'),
+                                                volume: 0.3);
                                           }
-                                        },
-                                        buttonSize: ButtonSize().controlButton,
-                                        colors: ButtonColors().controlButton,
-                                      ),
-                                      const SizedBox(
-                                        width: 60,
-                                      ),
-                                      //right button
-                                      //change theme if paused else move right
-                                      CustomButton(
-                                        onPressed: () {
-                                          isPaused
-                                              ? ref
-                                                  .read(
-                                                      gradientProvider.notifier)
-                                                  .toggleBackground()
-                                              : ref
-                                                  .read(gameController.notifier)
-                                                  .moveRight();
-                                          if (vibrate) {
-                                            Vibration.vibrate(
-                                              duration: duration,
-                                              amplitude: amplitude,
-                                            );
-                                          }
-                                        },
-                                        buttonSize: ButtonSize().controlButton,
-                                        colors: ButtonColors().controlButton,
-                                      ),
-                                    ],
-                                  ),
-                                  //down button
-                                  //decrease the speed level of the game if game is not playing
-                                  CustomButton(
-                                    onPressed: () {
-                                      if (!gameState.isPlaying) {
-                                        ref
-                                            .read(speedLevelProvider.notifier)
-                                            .decreaseSpeedLevel();
-                                      }
-                                      if (gameState.isPlaying && !isPaused) {
-                                        ref
-                                            .read(gameController.notifier)
-                                            .dropPieceBySteps(2);
-                                      }
-                                      if (vibrate) {
-                                        Vibration.vibrate(
-                                          duration: duration,
-                                          amplitude: amplitude,
-                                        );
-                                      }
-                                    },
-                                    buttonSize: ButtonSize().controlButton,
-                                    colors: ButtonColors().controlButton,
-                                  ),
-                                  Visibility(
-                                      visible:
-                                          (isPaused && gameState.isPlaying) ||
-                                              isPaused,
-                                      child: Text('< Change Theme >',
+                                          ref
+                                              .read(gameController.notifier)
+                                              .dropPiece();
+                                        }
+                                        if (vibrate) {
+                                          Vibration.vibrate(
+                                            duration: duration,
+                                            amplitude: amplitude,
+                                          );
+                                        }
+                                      },
+                                      buttonSize: ButtonSize().controlButton,
+                                      colors: ButtonColors().controlButton,
+                                    ),
+                                    //left and right buttons
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        //left button for left movement
+                                        // also control the background color if paused
+                                        //decrese level if not playing and not paused
+                                        CustomButton(
+                                          onPressed: () {
+                                            isPaused
+                                                ? ref
+                                                    .read(gradientProvider
+                                                        .notifier)
+                                                    .toggleBack()
+                                                : !isPlaying
+                                                    ? ref
+                                                        .read(gameLevelProvider
+                                                            .notifier)
+                                                        .decreaseGameLevel()
+                                                    : ref
+                                                        .read(gameController
+                                                            .notifier)
+                                                        .moveLeft();
+                                            if (vibrate) {
+                                              Vibration.vibrate(
+                                                duration: duration,
+                                                amplitude: amplitude,
+                                              );
+                                            }
+                                          },
+                                          buttonSize:
+                                              ButtonSize().controlButton,
+                                          colors: ButtonColors().controlButton,
+                                        ),
+                                        const SizedBox(
+                                          width: 60,
+                                        ),
+                                        //right button
+                                        //change theme if paused else move right
+                                        //increase game level if not playing and not paused
+                                        CustomButton(
+                                          onPressed: () {
+                                            isPaused
+                                                ? ref
+                                                    .read(gradientProvider
+                                                        .notifier)
+                                                    .toggleBackground()
+                                                : isPlaying
+                                                    ? ref
+                                                        .read(gameController
+                                                            .notifier)
+                                                        .moveRight()
+                                                    : ref
+                                                        .read(gameLevelProvider
+                                                            .notifier)
+                                                        .increaseGameLevel();
+                                            if (vibrate) {
+                                              Vibration.vibrate(
+                                                duration: duration,
+                                                amplitude: amplitude,
+                                              );
+                                            }
+                                          },
+                                          buttonSize:
+                                              ButtonSize().controlButton,
+                                          colors: ButtonColors().controlButton,
+                                        ),
+                                      ],
+                                    ),
+                                    //down button
+                                    //decrease the speed level of the game if game is not playing
+                                    CustomButton(
+                                      onPressed: () {
+                                        if (!isPlaying) {
+                                          ref
+                                              .read(speedLevelProvider.notifier)
+                                              .decreaseSpeedLevel();
+                                        }
+                                        if (isPlaying && !isPaused) {
+                                          ref
+                                              .read(gameController.notifier)
+                                              .dropPieceBySteps(2);
+                                        }
+                                        if (vibrate) {
+                                          Vibration.vibrate(
+                                            duration: duration,
+                                            amplitude: amplitude,
+                                          );
+                                        }
+                                      },
+                                      buttonSize: ButtonSize().controlButton,
+                                      colors: ButtonColors().controlButton,
+                                    ),
+                                    Visibility(
+                                      visible: (isPaused || !isPlaying),
+                                      child: Text(
+                                          (isPaused)
+                                              ? (isPlaying)
+                                                  ? '< Change Theme >\n '
+                                                  : '< Change Theme >\n Change Speed '
+                                              : '< Change Level >\n Change Speed ',
                                           style: GoogleFonts.adventPro(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.deepOrangeAccent)))
-                                ],
+                                              color: Colors.deepOrangeAccent)),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -418,17 +444,19 @@ class HomeScreen extends StatelessWidget {
 
                                 ///for the initial start of the game to display the main button as start button
                                 // if paused used as color toggleer
-                                return !isPaused
+                                return (!isPaused && gameState.isPlaying)
                                     ? CustomButton(
                                         type: 'main',
                                         onPressed: () {
-                                          (!gameState.isPlaying)
+                                          (isPaused)
                                               ? ref
-                                                  .read(gameController.notifier)
-                                                  .startGame()
+                                                  .read(pieceColorProvider
+                                                      .notifier)
+                                                  .toggleColor()
                                               : ref
                                                   .read(gameController.notifier)
-                                                  .rotatePiece();
+                                                  .startGame();
+
                                           if (vibrate) {
                                             Vibration.vibrate(
                                               duration: duration,
@@ -438,9 +466,9 @@ class HomeScreen extends StatelessWidget {
                                         },
                                         buttonSize: ButtonSize().mainButton,
                                         colors: ButtonColors().mainButton,
-                                        buttonName: (!gameState.isPlaying)
+                                        buttonName: (!isPaused)
                                             ? 'Start'
-                                            : 'Rotate',
+                                            : 'Change ColorMode',
                                         textColor: const Color.fromARGB(
                                             255, 16, 206, 51),
                                       )
@@ -448,8 +476,8 @@ class HomeScreen extends StatelessWidget {
                                         type: 'main',
                                         onPressed: () {
                                           ref
-                                              .read(pieceColorProvider.notifier)
-                                              .toggleColor();
+                                              .read(gameController.notifier)
+                                              .rotatePiece();
                                           if (vibrate) {
                                             Vibration.vibrate(
                                               duration: duration,
@@ -459,7 +487,7 @@ class HomeScreen extends StatelessWidget {
                                         },
                                         buttonSize: ButtonSize().mainButton,
                                         colors: ButtonColors().mainButton,
-                                        buttonName: 'Change Color',
+                                        buttonName: 'Rotate',
                                         textColor: Colors.amberAccent,
                                       );
                               }),
