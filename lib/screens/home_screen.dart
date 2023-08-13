@@ -2,14 +2,14 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tetris_game/buttons/cutom_button.dart';
-import 'package:tetris_game/gameover.dart';
+import 'package:tetris_game/screens/screen_components/gameover.dart';
 
 import 'package:tetris_game/providers/game_control_provider.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
 import 'package:tetris_game/resources/button_colors.dart';
 import 'package:tetris_game/resources/button_size.dart';
-import 'package:tetris_game/side_screen.dart';
-import 'package:tetris_game/tetris_board.dart';
+import 'package:tetris_game/screens/screen_components/side_screen.dart';
+import 'package:tetris_game/screens/screen_components/tetris_board.dart';
 
 import 'package:vibration/vibration.dart';
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart'

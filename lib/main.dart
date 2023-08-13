@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tetris_game/home_screen.dart';
+import 'package:tetris_game/screens/home_screen.dart';
 
 void main() {
   runApp(const ProviderScope(
