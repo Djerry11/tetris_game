@@ -40,12 +40,13 @@ class GameController extends StateNotifier<GameState> {
 
 //start the game loop and reset
   void startGame() async {
+    state = state.copyWith(disableButton: true);
     final level = ref.read(gameLevelProvider);
     await ref.read(levelBoardProvider.notifier).gameLevel(level);
 
     final sound = ref.read(soundProvider);
     if (sound) {
-      await AudioPlayer().play(AssetSource('initialsetup.mp3'), volume: 0.4);
+      await AudioPlayer().play(AssetSource('initialsetup.mp3'), volume: 0.3);
       await Future.delayed(const Duration(milliseconds: 1000));
     }
     //get the refresh rate from the speed level provider and set the refresh rate
@@ -129,14 +130,18 @@ class GameController extends StateNotifier<GameState> {
       } else if (direction == Direction.left) {
         col--;
         //check if left place is occipied
-        if (gameBoard[row][col] != null) {
-          return true;
+        if (row >= 0) {
+          if (gameBoard[row][col] != null) {
+            return true;
+          }
         }
       } else if (direction == Direction.right) {
         col++;
         //check if right place is occipied
-        if (gameBoard[row][col] != null) {
-          return true;
+        if (row >= 0) {
+          if (gameBoard[row][col] != null) {
+            return true;
+          }
         }
       }
       //check if the piece is at the ends of the board and left right movements can be done or not
@@ -160,7 +165,7 @@ class GameController extends StateNotifier<GameState> {
           gameBoard[row][col] = currentPiece.shape;
         }
       }
-      currentScore += 100;
+      currentScore += 20;
       state = state.copyWith(currentScore: currentScore);
       //create new piece after landing
       createNewPiece();

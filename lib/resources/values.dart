@@ -55,6 +55,7 @@ const Map<Tetromino, List<Color>> tetrominoColor = {
   ],
 };
 
+<<<<<<< HEAD
 List<List<Color>> colorGradients = [
   [const Color.fromARGB(255, 138, 84, 185), const Color(0xFF734b6d)],
   [
@@ -70,7 +71,59 @@ List<List<Color>> colorGradients = [
   [const Color(0xFFbdc3c7), const Color(0xFF2c3e50)],
   [const Color(0xFFde6262), const Color.fromARGB(255, 94, 47, 18)],
   [const Color.fromARGB(255, 235, 247, 247), const Color(0xFF48b1bf)],
+=======
+final List<List<Color>> colorGradients = [
+  [
+    const Color(0xFF8CBC3E),
+    const Color(0xFFB0C090),
+  ], // Light Beige to Light Green
+  [
+    const Color(0xFFD0A070),
+    const Color(0xFFB0C090)
+  ], // Light Brown to Light Beige
+  [
+    const Color(0xFFD0A070),
+    const Color(0xFFF86018),
+  ], // Light Red to Light Brown
+  [const Color(0xFF94A0FF), const Color(0xFFF86018)], // Light Blue to Light Red
+  // Light Yellow to Light Blue
+  [
+    const Color(0xFFF8D878),
+    const Color(0xFFD040C0),
+  ], // Light Purple to Light Yellow
+  [
+    const Color(0xFFD040C0),
+    const Color(0xFF0F380F),
+  ], // Dark Gray to Light Purple
+  [
+    const Color(0xFFAAAAAA),
+    const Color(0xFF306230)
+  ], // Light Gray to Dark Green
+  [const Color(0xFF777777), const Color(0xFFAAAAAA)], // Mid Gray to Light Gray
+  [const Color(0xFF333333), const Color(0xFF777777)],
+  [const Color(0xFFAAAAAA), const Color(0xFF777777)], // Light Gray to Mid Gray
+  [const Color(0xFF777777), const Color(0xFF333333)],
+>>>>>>> new
 ];
+
+// Use the above gradientColorPairs and the rest of the code from the previous example
+
+// List<List<Color>> colorGradients = [
+//   [const Color.fromARGB(255, 138, 84, 185), const Color(0xFF734b6d)],
+//   [
+//     const Color.fromARGB(255, 216, 109, 127),
+//     const Color.fromARGB(255, 133, 63, 22)
+//   ],
+//   [const Color(0xFF2193b0), const Color.fromARGB(255, 14, 68, 80)],
+//   [const Color(0xFFcc2b5e), const Color(0xFF753a88)],
+//   [
+//     const Color.fromARGB(255, 133, 76, 84),
+//     const Color.fromARGB(255, 80, 25, 32)
+//   ],
+//   [const Color(0xFFbdc3c7), const Color(0xFF2c3e50)],
+//   [const Color(0xFFde6262), const Color.fromARGB(255, 94, 47, 18)],
+//   [const Color.fromARGB(255, 235, 247, 247), const Color(0xFF48b1bf)],
+// ];
 
 class PieceColor {
   //tetromino color from classic tetris console 90s

@@ -50,6 +50,7 @@ class SideScreen extends StatelessWidget {
           flex: 2,
         ),
         DisplayLevel(title: 'SPEED:'),
+<<<<<<< HEAD
         Spacer(
           flex: 1,
         ),
@@ -57,6 +58,11 @@ class SideScreen extends StatelessWidget {
         Spacer(
           flex: 1,
         ),
+=======
+        Spacer(),
+        DisplayLevel(title: 'LEVEL:'),
+        Spacer(),
+>>>>>>> new
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -127,7 +133,7 @@ class SettingIcon extends StatelessWidget {
   }
 }
 
-/// Method for displaying the score
+/// Widget for displaying the score
 /// //highScore and Score
 class DisplayScore extends StatelessWidget {
   const DisplayScore({
@@ -225,7 +231,7 @@ class DisplayLevel extends StatelessWidget {
   }
 }
 
-/// Method for displaying the next piece in the side screen
+/// Widget for displaying the next piece in the side screen
 class NextPieceDisplay extends StatelessWidget {
   const NextPieceDisplay({
     super.key,

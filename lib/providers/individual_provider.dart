@@ -11,7 +11,7 @@ import 'game_control_provider.dart';
 var i = 0;
 
 class ScreenNotifier extends StateNotifier<List<Color>> {
-  ScreenNotifier() : super(colorGradients[5]);
+  ScreenNotifier() : super(colorGradients[8]);
 
   void toggleBackground() {
     state = colorGradients[++i % colorGradients.length];
@@ -22,7 +22,11 @@ class ScreenNotifier extends StateNotifier<List<Color>> {
   }
 
   void setDefault() {
+<<<<<<< HEAD
     state = colorGradients[5];
+=======
+    state = colorGradients[8];
+>>>>>>> new
   }
 }
 

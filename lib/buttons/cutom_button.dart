@@ -55,6 +55,7 @@ class _CustomButtonState extends State<CustomButton>
   Widget build(BuildContext context) {
     final buttonhasSound = AudioPlayer();
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Stack(
           alignment: AlignmentDirectional.center,
@@ -92,8 +93,13 @@ class _CustomButtonState extends State<CustomButton>
                           ? widget.type == 'main'
                               ? buttonhasSound.play(AssetSource('click.wav'))
                               : buttonhasSound.play(
+<<<<<<< HEAD
                                   AssetSource('cw_sound29.wav'),
                                   volume: 0.5)
+=======
+                                  AssetSource('quickmove.wav'),
+                                  volume: 0.2)
+>>>>>>> new
                           : {};
                     }
                   }
@@ -178,9 +184,16 @@ class _CustomButtonState extends State<CustomButton>
             child: Text(
               widget.buttonName ?? '',
               textAlign: TextAlign.center,
+<<<<<<< HEAD
               style: GoogleFonts.vt323(
                   color: widget.textColor,
                   fontSize: widget.type == 'main' ? 30 : 9,
+=======
+              style: TextStyle(
+                  fontFamily: 'Advent',
+                  color: widget.textColor,
+                  fontSize: 9,
+>>>>>>> new
                   fontWeight: FontWeight.bold),
             ),
           ),
