@@ -2,7 +2,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
 
 class CustomButton extends StatefulWidget {
@@ -46,7 +45,6 @@ class _CustomButtonState extends State<CustomButton>
 
   @override
   void dispose() {
-    AudioPlayer().dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -55,6 +53,7 @@ class _CustomButtonState extends State<CustomButton>
   Widget build(BuildContext context) {
     final buttonhasSound = AudioPlayer();
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Stack(
           alignment: AlignmentDirectional.center,
@@ -92,8 +91,8 @@ class _CustomButtonState extends State<CustomButton>
                           ? widget.type == 'main'
                               ? buttonhasSound.play(AssetSource('click.wav'))
                               : buttonhasSound.play(
-                                  AssetSource('cw_sound29.wav'),
-                                  volume: 0.5)
+                                  AssetSource('quickmove.wav'),
+                                  volume: 0.2)
                           : {};
                     }
                   }
@@ -178,9 +177,10 @@ class _CustomButtonState extends State<CustomButton>
             child: Text(
               widget.buttonName ?? '',
               textAlign: TextAlign.center,
-              style: GoogleFonts.vt323(
+              style: TextStyle(
+                  fontFamily: 'Advent',
                   color: widget.textColor,
-                  fontSize: widget.type == 'main' ? 30 : 9,
+                  fontSize: 9,
                   fontWeight: FontWeight.bold),
             ),
           ),

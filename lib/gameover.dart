@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class GameOverScreen extends StatelessWidget {
   const GameOverScreen({super.key});
@@ -14,26 +13,24 @@ class GameOverScreen extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: GoogleFonts.pressStart2p(
-            textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
+          style: const TextStyle(
+            fontSize: 20,
+            fontFamily: 'Press',
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(
           height: 20,
         ),
-        Text(
-          subtitle,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.pressStart2p(
-            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Colors.black54,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
+        Text(subtitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: 'Press',
+              fontSize: 16,
+              color: Colors.black54,
+              fontWeight: FontWeight.bold,
+            )),
       ],
     );
   }
