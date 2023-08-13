@@ -46,7 +46,7 @@ class LevelBoardNotifier extends StateNotifier<GameBoardState> {
         scatterness = [2, 5];
         break;
       default:
-        scatterness = [1, 4];
+        scatterness = [3, 6];
         break;
     }
     // Calculate the actual rows to fill, ensuring it doesn't exceed the max

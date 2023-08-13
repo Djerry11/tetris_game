@@ -20,6 +20,10 @@ class ScreenNotifier extends StateNotifier<List<Color>> {
   void toggleBack() {
     state = colorGradients[--i % colorGradients.length];
   }
+
+  void setDefault() {
+    state = colorGradients[5];
+  }
 }
 
 final gradientProvider =
@@ -29,16 +33,17 @@ final gradientProvider =
 
 //Piece Color Notifier Provider for the game
 class PieceColorNotifier extends StateNotifier<bool> {
-  PieceColorNotifier() : super(true);
-
+  PieceColorNotifier(this.ref) : super(true);
+  final Ref ref;
   void toggleColor() {
     state = !state;
+    ref.read(gradientProvider.notifier).setDefault();
   }
 }
 
 final pieceColorProvider =
     StateNotifierProvider<PieceColorNotifier, bool>((ref) {
-  return PieceColorNotifier();
+  return PieceColorNotifier(ref);
 });
 
 //Score provider for the game extends from the game controller
@@ -166,4 +171,11 @@ class GameLevelNotifier extends StateNotifier<int> {
 
 final gameLevelProvider = StateNotifierProvider<GameLevelNotifier, int>((ref) {
   return GameLevelNotifier();
+});
+
+///Provider to disable and enable buttons
+
+final disableButtonProvider = StateProvider<bool>((ref) {
+  bool result = ref.watch(gameController).disableButton;
+  return result;
 });
