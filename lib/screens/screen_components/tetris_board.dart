@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tetris_game/models/piece_model.dart';
-import 'package:tetris_game/pixel.dart';
+import 'package:tetris_game/screens/screen_components/pixel.dart';
 import 'package:tetris_game/providers/game_control_provider.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
 import 'package:tetris_game/resources/board_presets.dart';
