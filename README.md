@@ -37,15 +37,15 @@
 You can download and play the alpha version of our Tetris game on Android. Get the APK from the [Releases](https://github.com/Djerry11/tetris_game/releases) section.
 
 ## Features
-
-- **Manual Difficulty Customization**: Set custom levels and speeds to adjust the game's challenge.
-- **Immersive Audio and Visuals**: Enjoy captivating audio effects and dynamic visual animations.
-- **User Preferences**: Personalize settings for sound effects, color palettes, and backgrounds using `shared_preferences`.
+- **Immersive Audio and Visuals**: Enjoy captivating audio effects and dynamic visual animations
+- **Adjustable Difficulty:** Customize the difficulty level of the game to match your skill.
+- **Multiple Speeds:** Choose from various speeds to challenge yourself.
+- **Save High Scores:** Your high scores are saved using shared preferences for bragging rights.
 - **Responsive Controls**: Experience smooth and precise piece movements.
-- **Progressive Difficulty**: Challenge yourself with increasing difficulty as you clear lines.
 - **Efficient State Management**: Utilizes Riverpod and `freezed` for organized state management.
 - **Pause and Resume**: Flexibly pause and resume the game as needed.
 - **Vibration Feedback**: Feel the game with vibration feedback on crucial events.
+- **Turn Off Sound and Vibration:** Enjoy a distraction-free gaming experience by toggling sound and vibration on or off.
 
 ## Screenshots
 
