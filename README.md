@@ -58,7 +58,7 @@ You can download and play the alpha version of our Tetris game on Android. Get t
 <div align="center">
   <img src="screenshots/flutter_04.png" alt="Screenshot 4" width="200">
   <img src="screenshots/flutter_05.png" alt="Screenshot 5" width="200">
-  <img src="screenshots/flutter_05.png" alt="Screenshot 6" width="200">
+  <img src="screenshots/flutter_06.png" alt="Screenshot 6" width="200">
 </div>
 
 ## Installation
