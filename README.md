@@ -40,6 +40,7 @@ You can download and play the alpha version of our Tetris game on Android. Get t
 - **Immersive Audio and Visuals**: Enjoy captivating audio effects and dynamic visual animations
 - **Adjustable Difficulty:** Customize the difficulty level of the game to match your skill.
 - **Multiple Speeds:** Choose from various speeds to challenge yourself.
+- **Multiple Themes:** Explore different visual themes to change the look and feel of the game board.
 - **Save High Scores:** Your high scores are saved using shared preferences for bragging rights.
 - **Responsive Controls**: Experience smooth and precise piece movements.
 - **Efficient State Management**: Utilizes Riverpod and `freezed` for organized state management.
