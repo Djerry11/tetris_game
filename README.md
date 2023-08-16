@@ -1,7 +1,7 @@
 <!-- Tetris Game -->
 
 <p align="center">
-  <img src="screenshots/flutter_00.png" alt="Tetris Game Screenshot" width="600">
+  <img src="flutter_01.png" alt="Tetris Game Screenshot" width="600">
 </p>
 
 <h1 align="center">Tetris Game</h1>
@@ -47,6 +47,7 @@ You can download and play the alpha version of our Tetris game on Android. Get t
 - **Pause and Resume**: Flexibly pause and resume the game as needed.
 - **Vibration Feedback**: Feel the game with vibration feedback on crucial events.
 - **Turn Off Sound and Vibration:** Enjoy a distraction-free gaming experience by toggling sound and vibration on or off.
+- **Persistent User Settings:** Customize your gaming experience by adjusting difficulty levels, game speeds, and visual themes according to your preferences. When you return to the game, your chosen options seamlessly greet you, ensuring an engaging and personalized adventure every time you play
 
 ## Screenshots
 
