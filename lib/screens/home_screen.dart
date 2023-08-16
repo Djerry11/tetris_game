@@ -18,10 +18,37 @@ import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart'
 import 'package:flutter_svg/flutter_svg.dart';
 
 //Main Screen for the game
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-//   bool changeColor = false;
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // Save the state or settings here
+      final gameState = ref.read(gameController.notifier); //
+      gameState.saveSettings();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const duration = 30;
@@ -58,9 +85,21 @@ class HomeScreen extends StatelessWidget {
                   const Spacer(
                     flex: 1,
                   ),
+                  //disolay tetris
+
+                  const Text(
+                    'TETRIS',
+                    style: TextStyle(
+                      fontFamily: 'DSEG14',
+                      letterSpacing: 1,
+                      fontSize: 25,
+                      color: Color.fromARGB(221, 78, 9, 43),
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                   //Display Screen for the game
                   Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 10),
                       child: GameDisplay(height: height, width: width)),
                   const SizedBox(
                     height: 10,
@@ -71,7 +110,7 @@ class HomeScreen extends StatelessWidget {
                       width: width, duration: duration, amplitude: amplitude),
 
                   const SizedBox(
-                    height: 18,
+                    height: 12,
                   ), //Game control buttons
                   //movement control buttons with different options in different conditions
                   SizedBox(

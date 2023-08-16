@@ -158,7 +158,7 @@ extension PieceExtension on Piece {
     int row = (position / maxCol).floor();
     int col = position % maxCol;
     //return false if the position is occupied in the board
-    if (row < 0 || gameBoard[row][col] != null || col < 0) {
+    if (gameBoard[row][col] != null || col < 0) {
       return false;
     } else {
       return true;

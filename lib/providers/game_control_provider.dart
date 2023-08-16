@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tetris_game/models/piece_model.dart';
 import 'package:tetris_game/providers/individual_provider.dart';
@@ -10,6 +11,7 @@ import 'package:tetris_game/resources/board_presets.dart';
 import 'package:tetris_game/resources/values.dart';
 
 List<List<Tetromino?>> gameBoard = deepCopyBoard(emptyGameBoard);
+late Map<String, dynamic> settings;
 //StateNotifier Provider for the game
 final gameController = StateNotifierProvider<GameController, GameState>((ref) {
   return GameController(ref);
@@ -417,7 +419,7 @@ class GameController extends StateNotifier<GameState> {
   Future<void> startingScreen() async {
     final sound = ref.read(soundProvider);
     if (sound) {
-      await AudioPlayer().play(AssetSource('initialsetup.mp3'), volume: 0.6);
+      await AudioPlayer().play(AssetSource('initialsetup.mp3'), volume: 0.3);
     }
 
     gameBoard = deepCopyBoard(emptyGameBoard);
@@ -438,7 +440,7 @@ class GameController extends StateNotifier<GameState> {
       await _fillRowRandomly(row);
     }
     if (sound) {
-      await AudioPlayer().play(AssetSource('reset.wav'), volume: 0.9);
+      await AudioPlayer().play(AssetSource('reset.wav'), volume: 0.3);
     }
     // Fill rows 2, 3, and 4
     for (int col = 0; col < maxCol; col++) {
@@ -468,4 +470,23 @@ class GameController extends StateNotifier<GameState> {
           const Duration(milliseconds: 5)); // Delay between cells
     }
   }
+
+  //save and retrieve game settings
+  // Save selected gradient, sound, and vibration settings
+  Future<void> saveSettings() async {
+    int selectedGradient = ref.read(gradientProvider.notifier).getGradientIndex;
+    bool soundEnabled = ref.read(soundProvider);
+    bool vibrationEnabled = ref.read(vibrationProvider);
+    int level = ref.read(gameLevelProvider);
+    int speed = ref.read(speedLevelProvider);
+    final preferences = await SharedPreferences.getInstance();
+
+    preferences.setInt('gradient', selectedGradient);
+    preferences.setBool('sound', soundEnabled);
+    preferences.setBool('vibration', vibrationEnabled);
+    preferences.setInt('level', level);
+    preferences.setInt('speed', speed);
+  }
+
+// Load saved settings
 }

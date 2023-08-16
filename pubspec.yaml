@@ -30,12 +30,13 @@ environment:
 dependencies:
   audioplayers: null
   cupertino_icons: ^1.0.2
+  device_preview: ^1.1.0
   flutter:
     sdk: flutter
   flutter_inset_box_shadow: ^1.0.8
   flutter_js: ^0.8.0
   flutter_riverpod: null
-  flutter_svg:
+  flutter_svg: null
   freezed_annotation: null
   google_fonts: ^5.1.0
   shared_preferences: ^2.2.0

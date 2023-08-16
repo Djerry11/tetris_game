@@ -9,9 +9,20 @@ import 'game_control_provider.dart';
 
 //Background Color Notifier for the game
 var i = 0;
+// Load the settings from shared preferences
 
+//for the screen background gradients
 class ScreenNotifier extends StateNotifier<List<Color>> {
-  ScreenNotifier() : super(colorGradients[8]);
+  ScreenNotifier() : super(colorGradients[8]) {
+    _loadSavedGradient();
+  }
+  void _loadSavedGradient() async {
+    final prefs = await SharedPreferences.getInstance();
+    final index = (prefs.getInt('gradient') ?? 8) % colorGradients.length;
+    i = index;
+
+    state = colorGradients[index];
+  }
 
   void toggleBackground() {
     state = colorGradients[++i % colorGradients.length];
@@ -21,8 +32,10 @@ class ScreenNotifier extends StateNotifier<List<Color>> {
     state = colorGradients[--i % colorGradients.length];
   }
 
-  void setDefault() {
-    state = colorGradients[8];
+  int get getGradientIndex => i;
+
+  void setfav(int index) {
+    state = colorGradients[index];
   }
 }
 
@@ -37,7 +50,7 @@ class PieceColorNotifier extends StateNotifier<bool> {
   final Ref ref;
   void toggleColor() {
     state = !state;
-    ref.read(gradientProvider.notifier).setDefault();
+    ref.read(gradientProvider.notifier).setfav(8);
   }
 }
 
@@ -71,7 +84,16 @@ final gameBoardProvider = StateProvider<List<List<Tetromino?>>>((ref) {
 
 //Provider for the vibration control
 class VibrationNotifier extends StateNotifier<bool> {
-  VibrationNotifier() : super(true);
+  VibrationNotifier() : super(true) {
+    _loadSavedVibration();
+  }
+
+  Future<void> _loadSavedVibration() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final vibration = prefs.getBool('vibration') ?? true;
+    state = vibration;
+  }
 
   void toggleVibration() {
     state = !state;
@@ -113,7 +135,14 @@ final highScoreProvider = StateNotifierProvider<HighScoreNotifier, int>((ref) {
 
 //Provider for the sound control
 class SoundNotifier extends StateNotifier<bool> {
-  SoundNotifier() : super(true);
+  SoundNotifier() : super(true) {
+    _loadSavedSound();
+  }
+  void _loadSavedSound() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sound = prefs.getBool('sound') ?? true;
+    state = sound;
+  }
 
   void toggleSound() {
     state = !state;
@@ -128,7 +157,15 @@ final soundProvider = StateNotifierProvider<SoundNotifier, bool>((ref) {
 //changes the screen time
 
 class SpeedLevelNotifier extends StateNotifier<int> {
-  SpeedLevelNotifier() : super(0);
+  SpeedLevelNotifier() : super(0) {
+    _loadSavedSpeed();
+  }
+
+  void _loadSavedSpeed() async {
+    final prefs = await SharedPreferences.getInstance();
+    final speed = prefs.getInt('speed') ?? 0;
+    state = speed;
+  }
 
   void increaseSpeedLeve() {
     if (state < 14 && state >= 0) {
@@ -152,7 +189,14 @@ final speedLevelProvider =
 
 //game level provider for the game
 class GameLevelNotifier extends StateNotifier<int> {
-  GameLevelNotifier() : super(0);
+  GameLevelNotifier() : super(0) {
+    _loadSavedLevel();
+  }
+  void _loadSavedLevel() async {
+    final prefs = await SharedPreferences.getInstance();
+    final level = prefs.getInt('level') ?? 0;
+    state = level;
+  }
 
   void increaseGameLevel() {
     if (state < 14 && state >= 0) {
