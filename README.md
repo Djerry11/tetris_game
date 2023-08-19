@@ -75,6 +75,7 @@ You can download and play the alpha version of our Tetris game on Android. Get t
    
 5. Run the app:
    ```sh
+    flutter pub get
     flutter run
 
 ## Usage
